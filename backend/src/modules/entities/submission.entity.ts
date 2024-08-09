@@ -1,15 +1,17 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import {SubmissionLanguage, SubmissionStatus} from "@modules/problem/submission/enum/submission.enum";
+import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {SubmissionLanguage, SubmissionStatus} from "@modules/entities/enum/submission.enum";
+import {BaseEntity} from "@modules/share/base/base.entity";
+import {Problem} from "@modules/entities/problem.entity";
+import {User} from "@modules/entities/user.entity";
 
 @Entity('t_submission')
-export class Submission{
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class Submission extends BaseEntity{
     @Column()
+    @ManyToOne(type => User, user => user.id)
     userId: number; //relation with user
 
     @Column()
+    @ManyToOne(type => Problem, problem => problem.id)
     problemId: number; //relation with problem
 
     @Column()

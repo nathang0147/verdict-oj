@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Problem} from "@modules/entities/problem.entity";
 
 @Entity('t_testcase')
 export class Testcase{
@@ -7,6 +8,7 @@ export class Testcase{
     id: number;
 
     @Column()
+    @ManyToOne(type => Problem, problem => problem.id)
     problemId: number;
 
     @Column()

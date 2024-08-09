@@ -1,10 +1,8 @@
 import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {BaseEntity} from "@modules/share/base/base.entity";
 
 @Entity('t_problem')
-export class Problem{
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class Problem extends BaseEntity{
     @Column()
     title: string;
 
