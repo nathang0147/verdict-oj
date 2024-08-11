@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ProblemService } from './problem.service';
 import { ProblemController } from './problem.controller';
-import { TestcaseModule } from './testcase/testcase.module';
-import { SubmissionModule } from './submission/submission.module';
+import { TestcaseModule } from '@modules/testcase/testcase.module';
+import { SubmissionModule } from '@modules/submission/submission.module';
 
 @Module({
   controllers: [ProblemController],

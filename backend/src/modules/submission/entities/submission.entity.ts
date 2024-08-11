@@ -1,7 +1,7 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import {SubmissionLanguage, SubmissionStatus} from "@modules/entities/enum/submission.enum";
+import {SubmissionLanguage, SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";
 import {BaseEntity} from "@modules/share/base/base.entity";
-import {Problem} from "@modules/entities/problem.entity";
+import {Problem} from "@modules/problem/entities/problem.entity";
 import {User} from "@modules/entities/user.entity";
 
 @Entity('t_submission')

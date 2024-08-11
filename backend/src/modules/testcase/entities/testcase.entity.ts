@@ -1,5 +1,5 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import {Problem} from "@modules/entities/problem.entity";
+import {Problem} from "@modules/problem/entities/problem.entity";
 
 @Entity('t_testcase')
 export class Testcase{
