@@ -2,7 +2,7 @@ import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Upd
 import {SubmissionLanguage, SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";
 import {BaseEntity} from "@modules/share/base/base.entity";
 import {Problem} from "@modules/problem/entities/problem.entity";
-import {User} from "@modules/entities/user.entity";
+import {User} from "@modules/user/entities/user.entity";
 
 @Entity('t_submission')
 export class Submission extends BaseEntity{

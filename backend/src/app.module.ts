@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import {ConfigModule, ConfigService} from '@nestjs/config';
 import * as process from 'node:process';
-import configurationConfig, {DatabaseConfig, EnvironmentVariables, NodeEnv} from './configs/configuration.config';
-import Joi from 'joi';
+import configurationConfig, {DatabaseConfig, EnvironmentVariables, NodeEnv} from '@configs/env/configuration.config';
+import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
@@ -15,6 +13,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 					.valid('development', 'production', 'test', 'provision', 'staging')
 					.default('development'),
 				PORT: Joi.number().default(3000),
+				DB_HOST: Joi.string().required(),
+				DB_PORT: Joi.number().required(),
+				DB_USERNAME: Joi.string().required(),
+				DB_PASSWORD: Joi.string().required(),
+				DB_NAME: Joi.string().required(),
+				DB_TIMEZONE: Joi.string().default('UTC'),
+				TYPEORM_SYNC: Joi.boolean().default(false),
 			}),
 			validationOptions: {
 				abortEarly: false,
@@ -30,7 +35,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 			inject: [ConfigService],
 			useFactory: (configService: ConfigService<EnvironmentVariables>) => {
 				const databaseConfig = configService.get<DatabaseConfig>('database');
-
 				return {
 					type: 'postgres',
 					host: databaseConfig?.host,
@@ -45,7 +49,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 			}
 		}),
 	],
-	controllers: [AppController],
-	providers: [AppService],
+	controllers: [],
+	providers: [],
 })
 export class AppModule {}

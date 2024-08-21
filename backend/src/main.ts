@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {Logger, ValidationPipe} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DatabaseConfig } from '@configs/configuration.config';
+import { DatabaseConfig } from '@configs/env/configuration.config';
 
 async function bootstrap() {
 	const logger = new Logger(bootstrap.name);

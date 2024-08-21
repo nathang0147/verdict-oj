@@ -1,5 +1,4 @@
 import * as process from 'node:process';
-import {defaults} from "joi";
 
 export interface DatabaseConfig {
 	host: string;
@@ -11,20 +10,23 @@ export interface DatabaseConfig {
 	typeormSync: boolean;
 }
 
-export enum NodeEnv {
-	Dev = 'development',
-	Prod = 'production',
-}
+export const NodeEnv = {
+	Dev: 'development',
+	Prod: 'production',
+	Test: 'test',
+	Provision: 'provision',
+	Staging: 'staging',
+};
 
 export interface EnvironmentVariables {
-	nodeEnv: NodeEnv;
+	NODE_ENV: string;
 
 	database: DatabaseConfig;
 }
 
 export default (): EnvironmentVariables => {
 	return {
-		nodeEnv: process.env.NODE_ENV === NodeEnv.Prod ? NodeEnv.Prod : NodeEnv.Dev,
+		NODE_ENV: process.env.NODE_ENV || 'development',
 
 		database: {
 			host: process.env.DB_HOST,
