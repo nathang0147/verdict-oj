@@ -15,18 +15,6 @@ export class User extends BaseEntity{
     @Exclude()
     password: string;
 
-    @Column()
-    rank: number;
-
-    @Column()
-    steak: number;
-
-    @Column()
-    accountLocked: boolean;
-
-    @Column()
-    enable: boolean;
-
     @Column({
         type: "enum",
         enum: ["user", "admin"],

@@ -1,5 +1,6 @@
 import { FindAllResponse } from 'src/types/common.type';
 import {DeepPartial, FindManyOptions, FindOneOptions} from "typeorm";
+import {FindDto} from "../../api/utils/find.dto";
 
 export interface Write<T> {
     create(item: T | DeepPartial<T>): Promise<T>;
@@ -9,11 +10,12 @@ export interface Write<T> {
 
 export interface Read<T> {
     findAll(
-        filter?: FindManyOptions<T>,
-        options?: (keyof T)[],
+        filter?: object,
+        option?: object,
     ): Promise<FindAllResponse<T>>;
     findOne(id: number): Promise<T>;
-    findOneByCondition(condition: FindOneOptions<T>, filter?: (keyof T)[]): Promise<T>;
+    findOneByCondition(condition: FindOneOptions<T>, projection?: (keyof T)[]): Promise<T>;
 }
 
-export interface BaseServiceInterface<T> extends Write<T>, Read<T> {}
+export interface BaseServiceInterface<T> extends Write<T>, Read<T> {
+}

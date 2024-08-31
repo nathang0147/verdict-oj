@@ -1,5 +1,6 @@
 import { FindAllResponse } from "../../types/common.type";
 import {DeepPartial, FindManyOptions, FindOneOptions} from "typeorm";
+import {FindDto} from "../../api/utils/find.dto";
 
 export interface BaseRepositoryInterface<T> {
     /**
@@ -7,15 +8,16 @@ export interface BaseRepositoryInterface<T> {
      * @param dto The data transfer object (DTO) used to create the new entity.
      * @returns A promise that resolves with the created entity.
      */
-    create(dto: T | DeepPartial<T>): Promise<T>;
+    create(dto: T | any): Promise<T>;
 
     /**
      * Finds a single entity by its ID.
      * @param id The ID of the entity to find.
      * @param projection Optional projection to specify which fields to retrieve.
+     * @param option Optional options to specify which condition to retrieve.
      * @returns A promise that resolves with the found entity.
      */
-    findOneById(id: number, projection?: (keyof T)[]): Promise<T>;
+    findOneById(id: number, projection?: (keyof T)[], option?: object): Promise<T>;
 
     /**
      * Finds a single entity by a specific condition.
@@ -23,15 +25,15 @@ export interface BaseRepositoryInterface<T> {
      * @param projection Optional projection to specify which fields to retrieve.
      * @returns A promise that resolves with the found entity.
      */
-    findOneByCondition(condition: FindOneOptions<T>, projection?: (keyof T)[]): Promise<T>;
+    findOneByCondition(condition: object, projection?: (keyof T)[]): Promise<T>;
 
     /**
      * Finds all entities matching a specific condition.
      * @param condition The condition to use for finding the entities.
-     * @param projection Optional projection to specify which fields to retrieve.
+     * @param option Optional options to specify which fields to retrieve.
      * @returns A promise that resolves with an object containing the total count and an array of the found entities.
      */
-    findAll(condition?: FindManyOptions<T>, projection?: (keyof T)[]): Promise<FindAllResponse<T>>;
+    findAll(condition?: object, option?: object): Promise<FindAllResponse<T>>;
 
     /**
      * Updates an existing entity based on its ID and the provided DTO.

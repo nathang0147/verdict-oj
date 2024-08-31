@@ -11,8 +11,10 @@ export class CreateUserDto{
     email: string;
 
     @IsNotEmpty()
+    @MaxLength(50)
     @IsStrongPassword()
     password: string;
 
+    role: string;
 
 }

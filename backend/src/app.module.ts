@@ -4,6 +4,11 @@ import * as process from 'node:process';
 import configurationConfig, {DatabaseConfig, EnvironmentVariables, NodeEnv} from '@configs/env/configuration.config';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import {UserModule} from "@modules/user/user.module";
+import {ProblemModule} from "@modules/problem/problem.module";
+import {TestcaseModule} from "@modules/testcase/testcase.module";
+import {SubmissionModule} from "@modules/submission/submission.module";
+import {UserRolesModule} from "@modules/user-roles/user-roles.module";
 
 @Module({
 	imports: [
@@ -43,11 +48,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 					password: databaseConfig?.password,
 					database: databaseConfig?.name,
 					useUTC: databaseConfig?.timezone === 'UTC',
-					autoLoadEntities: Boolean(databaseConfig?.typeormSync),
+					autoLoadEntities: true,
 					synchronize: Boolean(databaseConfig?.typeormSync),
 				}
 			}
 		}),
+		UserModule,
+		UserRolesModule,
+		ProblemModule,
+		TestcaseModule,
+		SubmissionModule
 	],
 	controllers: [],
 	providers: [],

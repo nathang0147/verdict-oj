@@ -1,8 +1,10 @@
-import {Body, Controller, Get, Post, Query} from '@nestjs/common';
+import {Body, ClassSerializerInterceptor, Controller, Get, Post, Query, UseInterceptors} from '@nestjs/common';
 import { UserService } from './user.service';
 import {CreateUserDto} from "@modules/user/dto/create.user.dto";
 import {FindDto} from "../../api/utils/find.dto";
+import {User} from "@modules/user/entities/user.entity";
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -13,7 +15,8 @@ export class UserController {
   }
 
   @Get()
-    findAll(@Query() findDto: FindDto) {
-        return this.userService.findAll(findDto)
-    }
+  findAll(@Query() findDto: FindDto<User>) {
+      return this.userService.findAll(findDto)
+  }
+  
 }
