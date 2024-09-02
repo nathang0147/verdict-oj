@@ -41,7 +41,6 @@ export class UserService extends BaseServiceAbstract<User>{
     async findAll(filter?:FindOptionsWhere<User>, options?:FindDto<User>) : Promise<FindAllResponse<User>>{
         return await this.usersRepository.findAllWithSubFields(filter, {
             ...options,
-            relations: ['role']
         });
     }
 

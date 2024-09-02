@@ -5,6 +5,8 @@ import { registerAs } from '@nestjs/config';
 
 dotenvConfig({ path: '.env.dev' });
 
+const isDevEnv = process.env.NODE_ENV === 'development';
+
 const config = {
     type: 'postgres',
     host: process.env.DB_HOST,
@@ -12,8 +14,8 @@ const config = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: ["dist/**/*.entity{.ts,.js}"],
-    migrations: ["dist/migrations/*{.ts,.js}"],
+    entities: [isDevEnv ? 'src/**/entities/*.ts' : 'dist/**/entities/*.js'],
+    migrations: [isDevEnv ? 'src/migrations/*.ts' : 'dist/migrations/*.js'],
     timezone: process.env.DB_TIMEZONE || 'UTC',
     synchronize: process.env.TYPEORM_SYNC === 'true' || false,
 };

@@ -6,6 +6,4 @@ import {FindOptionsWhere} from "typeorm";
 
 export interface UsersRepositoryInterfaces extends BaseRepositoryInterface<User>{
     findAllWithSubFields(condition: FindOptionsWhere<User>,findDto: FindDto<User>): Promise<FindAllResponse<User>>;
-
-    getUserWithRoles(userId: number): Promise<User>;
 }

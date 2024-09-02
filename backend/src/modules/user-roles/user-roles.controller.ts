@@ -20,7 +20,7 @@ export class UserRolesController {
   constructor(private readonly userRolesService: UserRolesService) {}
 
   @Post()
-  create(@Body() createUserRolesDto: CreateUserRolesDto): Promise<UserRoles[]> {
+  create(@Body() createUserRolesDto: CreateUserRolesDto): Promise<UserRoles> {
     return this.userRolesService.create(createUserRolesDto);
   }
 
