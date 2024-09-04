@@ -19,19 +19,19 @@ export abstract class BaseServiceAbstract<T extends BaseEntity>
 
     }
 
-    async findOne(id: number): Promise<T> {
+    async findOne(id: string): Promise<T> {
         return await this.repository.findOneById(id);
     }
 
-    async findOneByCondition(condition: FindOneOptions<T>, filter?: (keyof T)[]): Promise<T> {
+    async findOneByCondition(condition: FindOptionsWhere<T>, filter?: (keyof T)[]): Promise<T> {
         return await this.repository.findOneByCondition(condition, filter);
     }
 
-    async update(id: number, item: DeepPartial<T>): Promise<T> {
+    async update(id: string, item: DeepPartial<T>): Promise<T> {
         return this.repository.update(id, item);
     }
 
-    async remove(id: number): Promise<boolean> {
+    async remove(id: string): Promise<boolean> {
         return this.repository.softDelete(id);
     }
 }

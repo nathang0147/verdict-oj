@@ -22,7 +22,7 @@ export class UserService extends BaseServiceAbstract<User>{
 
     async create(createUserDto: CreateUserDto): Promise<User> {
         let userRole = await this.userRolesService.findOneByCondition({
-            where: {name: USER_ROLES.USER}
+            name: USER_ROLES.USER
         })
 
         if(!userRole){
@@ -42,6 +42,15 @@ export class UserService extends BaseServiceAbstract<User>{
         return await this.usersRepository.findAllWithSubFields(filter, {
             ...options,
         });
+    }
+
+    async getUserByEmail(email: string): Promise<User> {
+        try {
+            const user = await this.usersRepository.findOneByCondition({email})
+            return user;
+        }catch (e) {
+            throw e
+        }
     }
 
 }

@@ -9,6 +9,12 @@ import {ProblemModule} from "@modules/problem/problem.module";
 import {TestcaseModule} from "@modules/testcase/testcase.module";
 import {SubmissionModule} from "@modules/submission/submission.module";
 import {UserRolesModule} from "@modules/user-roles/user-roles.module";
+import {AuthenticationModule} from "@modules/authentication/authentication.module";
+import {AuthorizationModule} from "@modules/authorization/authorization.module";
+import {ThrottlerModule} from "@nestjs/throttler";
+import {ScheduleModule} from "@nestjs/schedule";
+import {APP_GUARD} from "@nestjs/core";
+import {JwtAuthGuard} from "@modules/authentication/guard/jwt-auth.guard";
 
 @Module({
 	imports: [
@@ -57,9 +63,28 @@ import {UserRolesModule} from "@modules/user-roles/user-roles.module";
 		UserRolesModule,
 		ProblemModule,
 		TestcaseModule,
-		SubmissionModule
+		SubmissionModule,
+		AuthenticationModule,
+		AuthorizationModule,
+		ThrottlerModule.forRoot([
+			{
+				name: 'short',
+				ttl: 1000,
+				limit: 50,
+			},
+			{
+				name: 'long',
+				ttl: 60000,
+				limit: 1000,
+			},
+		]),
+		ScheduleModule.forRoot(),
 	],
-	controllers: [],
-	providers: [],
+	providers: [
+		{
+			provide: APP_GUARD,
+			useClass: JwtAuthGuard
+		},
+	],
 })
 export class AppModule {}

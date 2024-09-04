@@ -15,6 +15,4 @@ export class CreateUserDto{
     @IsStrongPassword()
     password: string;
 
-    role: string;
-
 }

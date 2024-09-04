@@ -10,10 +10,10 @@ export class RefreshToken{
     @Column()
     expiresAt: Date;
 
-    @Column()
-    userId: number;
+    @Column({name: "user_id"})
+    userId: string;
 
     @ManyToOne(() => User, {onDelete: 'CASCADE'})
-    @JoinColumn({name: "userId"})
+    @JoinColumn({name: "user_id"})
     user: User;
 }

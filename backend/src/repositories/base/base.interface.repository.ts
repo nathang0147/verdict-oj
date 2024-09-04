@@ -17,7 +17,7 @@ export interface BaseRepositoryInterface<T> {
      * @param option Optional options to specify which condition to retrieve.
      * @returns A promise that resolves with the found entity.
      */
-    findOneById(id: number, projection?: (keyof T)[], option?: object): Promise<T>;
+    findOneById(id: string, projection?: (keyof T)[], option?: object): Promise<T>;
 
     /**
      * Finds a single entity by a specific condition.
@@ -41,19 +41,19 @@ export interface BaseRepositoryInterface<T> {
      * @param dto The data transfer object (DTO) containing the updated fields.
      * @returns A promise that resolves with the updated entity.
      */
-    update(id: number, dto: DeepPartial<T>): Promise<T>;
+    update(id: string, dto: DeepPartial<T>): Promise<T>;
 
     /**
      * Soft deletes an entity based on its ID.
      * @param id The ID of the entity to soft delete.
      * @returns A promise that resolves with a boolean indicating the success of the operation.
      */
-    softDelete(id: number): Promise<boolean>;
+    softDelete(id: string): Promise<boolean>;
 
     /**
      * Permanently deletes an entity based on its ID.
      * @param id The ID of the entity to permanently delete.
      * @returns A promise that resolves with a boolean indicating the success of the operation.
      */
-    permanentDelete(id: number): Promise<boolean>;
+    permanentDelete(id: string): Promise<boolean>;
 }

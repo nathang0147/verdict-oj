@@ -18,7 +18,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
     }
 
     async findOneById(
-        id: number,
+        id: string,
         projection?: (keyof T)[],
         options?: FindOneOptions<T>,
     ): Promise<T | null> {
@@ -31,7 +31,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
         return item?.deletedAt ? null : item;
     }
 
-    async findOneByCondition(condition: FindOneOptions<T>, projection?: (keyof T)[]): Promise<T> {
+    async findOneByCondition(condition: FindOptionsWhere<T>, projection?: (keyof T)[]): Promise<T> {
         return await this.model.findOne({...condition, select: projection});
     }
 
@@ -46,14 +46,14 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
         return { count, items };
     }
 
-    async update(id: number, dto: DeepPartial<T>): Promise<T | null> {
+    async update(id: string, dto: DeepPartial<T>): Promise<T | null> {
         await this.model.update(id, dto as any);
         return await this.model.findOne({
             where: {id, deletedAt: null} as any,
         })
     }
 
-    async softDelete(id: number): Promise<boolean> {
+    async softDelete(id: string): Promise<boolean> {
         const item = await this.model.findOne(id as any);
         if(!item) return false;
 
@@ -62,7 +62,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
         return result.affected ===1;
     }
 
-    async permanentDelete(id: number): Promise<boolean> {
+    async permanentDelete(id: string): Promise<boolean> {
         const result = await this.model.delete(id);
         return result.affected ===1;
     }
