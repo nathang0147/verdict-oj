@@ -17,6 +17,7 @@ export class AuthenticationController {
       private readonly authRefreshTokenService: AuthRefreshTokenService,
       ) {}
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Request() req: any) {
@@ -24,6 +25,7 @@ export class AuthenticationController {
     return this.authenticationService.login(user.id.toString())
   }
 
+  @Public()
   @Post('sign-up')
   async signUp(@Body() signUpDto: SignUpDto) {
     return this.authenticationService.signUp(signUpDto)

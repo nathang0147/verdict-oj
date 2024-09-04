@@ -30,20 +30,20 @@ export class UserRolesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<UserRoles> {
+  findOne(@Param('id') id: string): Promise<UserRoles> {
     return this.userRolesService.findOne(id);
   }
 
   @Patch(':id')
   update(
-      @Param('id') id: number,
+      @Param('id') id: string,
       @Body() updateUserRoleDto: UpdateUserRoleDto,
   ): Promise<UserRoles> {
     return this.userRolesService.update(id, updateUserRoleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<boolean> {
+  remove(@Param('id') id: string): Promise<boolean> {
     return this.userRolesService.remove(id);
   }
 }

@@ -9,6 +9,7 @@ import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {Cron, CronExpression} from "@nestjs/schedule";
 import {User} from "@modules/user/entities/user.entity";
 import {AuthenticationService} from "@modules/authentication/authentication.service";
+import {accessTokenPrivateKey, refreshTokenPrivateKey} from "../../contraints/jwt.contraints";
 
 @Injectable()
 export class AuthRefreshTokenService{
@@ -21,7 +22,8 @@ export class AuthRefreshTokenService{
 
     generateToken(payload: TokenPayLoad){
         return this.jwtService.sign(payload,{
-            secret: 'access_token_secrete',
+            algorithm: 'RS256',
+            privateKey: accessTokenPrivateKey,
             expiresIn: `${this.configService.get<string>(
                 'JWT_ACCESS_TOKEN_EXPIRATION_TIME'
             )}s`,
@@ -36,7 +38,8 @@ export class AuthRefreshTokenService{
         const newRefreshToken = this.jwtService.sign(
             payLoad,
             {
-                secret: 'access_token_secrete',
+                algorithm: 'RS256',
+                privateKey: refreshTokenPrivateKey,
                 expiresIn: `${this.configService.get<string>(
                     'JWT_REFRESH_TOKEN_EXPIRATION_TIME'
                 )}s`,

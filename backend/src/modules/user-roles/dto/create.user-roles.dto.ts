@@ -8,5 +8,5 @@ export class CreateUserRolesDto {
 
     @IsOptional()
     @MinLength(1)
-    description: string;
+    _description: string;
 }

@@ -17,12 +17,12 @@ export class UserRoles extends BaseEntity{
         enum: USER_ROLES,
         nullable: false
     })
-    @IsEnum(USER_ROLES)
-    @IsNotEmpty()
     @Expose({ name: 'role', toPlainOnly: true })
     name: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     @Expose()
     _description: string;
 }

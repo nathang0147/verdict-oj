@@ -1,6 +1,7 @@
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Exclude} from "class-transformer"
 import {BaseEntity} from "@modules/share/base/base.entity";
+import Role from "@modules/authorization/contrants/role.enum";
 
 @Entity({name: '_user'})
 export class User extends BaseEntity{
@@ -17,8 +18,8 @@ export class User extends BaseEntity{
 
     @Column({
         type: "enum",
-        enum: ["user", "admin"],
-        default: "user"
+        enum: Role,
+        default: Role.USER
     })
     role: string;
 }

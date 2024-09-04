@@ -32,7 +32,9 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
     }
 
     async findOneByCondition(condition: FindOptionsWhere<T>, projection?: (keyof T)[]): Promise<T> {
-        return await this.model.findOne({...condition, select: projection});
+        return await this.model.findOne({
+            where: condition,
+            select: projection});
     }
 
     async findAll(
@@ -40,7 +42,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
         options?: FindOneOptions<T>,
     ): Promise<FindAllResponse<T>> {
         const [items, count] = await this.model.findAndCount({
-            where: {...condition, deletedAt:null} as any,
+            where: {condition, deletedAt:null} as any,
             select: options?.select,
         });
         return { count, items };

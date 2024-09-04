@@ -21,19 +21,9 @@ export class UserService extends BaseServiceAbstract<User>{
     }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
-        let userRole = await this.userRolesService.findOneByCondition({
-            name: USER_ROLES.USER
-        })
-
-        if(!userRole){
-            userRole = await this.userRolesService.create({
-                name: USER_ROLES.USER
-            })
-        }
 
         const user = await this.usersRepository.create({
-            ...createUserDto,
-            role: userRole
+            ...createUserDto
         });
         return user;
     }

@@ -3,7 +3,7 @@ import {ExtractJwt, Strategy} from "passport-jwt";
 import {UserService} from "@modules/user/user.service";
 import {TokenPayLoad} from "@modules/authentication/interfaces/token.interface";
 import {Injectable, UnauthorizedException} from "@nestjs/common";
-import {Request} from "express";
+import {refreshTokenPublicKey} from "../../../contraints/jwt.contraints";
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
@@ -13,7 +13,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: 'refresh_token_secret',
+            secretOrKey: refreshTokenPublicKey,
             passReqToCallback: true,
         });
     }

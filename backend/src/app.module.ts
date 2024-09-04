@@ -11,10 +11,11 @@ import {SubmissionModule} from "@modules/submission/submission.module";
 import {UserRolesModule} from "@modules/user-roles/user-roles.module";
 import {AuthenticationModule} from "@modules/authentication/authentication.module";
 import {AuthorizationModule} from "@modules/authorization/authorization.module";
-import {ThrottlerModule} from "@nestjs/throttler";
+import {ThrottlerGuard, ThrottlerModule} from "@nestjs/throttler";
 import {ScheduleModule} from "@nestjs/schedule";
 import {APP_GUARD} from "@nestjs/core";
 import {JwtAuthGuard} from "@modules/authentication/guard/jwt-auth.guard";
+import {RoleGuard} from "@modules/authorization/guard/role.guard";
 
 @Module({
 	imports: [
@@ -84,6 +85,14 @@ import {JwtAuthGuard} from "@modules/authentication/guard/jwt-auth.guard";
 		{
 			provide: APP_GUARD,
 			useClass: JwtAuthGuard
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RoleGuard
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
 		},
 	],
 })

@@ -24,6 +24,9 @@ export abstract class BaseServiceAbstract<T extends BaseEntity>
     }
 
     async findOneByCondition(condition: FindOptionsWhere<T>, filter?: (keyof T)[]): Promise<T> {
+        if (!condition || Object.keys(condition).length === 0) {
+            throw new Error("You must provide selection conditions in order to find a single row.");
+        }
         return await this.repository.findOneByCondition(condition, filter);
     }
 

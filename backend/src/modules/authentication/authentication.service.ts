@@ -12,8 +12,6 @@ export class AuthenticationService {
     private SALT_ROUNDS = 11;
     constructor(
         private userService: UserService,
-        private configService: ConfigService,
-        private jwtService: JwtService,
         private refreshTokenService:AuthRefreshTokenService
     ) {}
 
