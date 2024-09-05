@@ -7,15 +7,13 @@ import {JwtService} from "@nestjs/jwt";
 import {TokenPayLoad} from "@modules/authentication/interfaces/token.interface";
 import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {Cron, CronExpression} from "@nestjs/schedule";
-import {User} from "@modules/user/entities/user.entity";
-import {AuthenticationService} from "@modules/authentication/authentication.service";
 import {accessTokenPrivateKey, refreshTokenPrivateKey} from "../../contraints/jwt.contraints";
 
 @Injectable()
 export class AuthRefreshTokenService{
     constructor(
         private jwtService: JwtService,
-        private configService: ConfigService,
+        private configService: ConfigService<EnvironmentVariables>,
         @InjectRepository(RefreshToken)
         private refreshTokenRepository: Repository<RefreshToken>,
     ) {}
@@ -24,9 +22,7 @@ export class AuthRefreshTokenService{
         return this.jwtService.sign(payload,{
             algorithm: 'RS256',
             privateKey: accessTokenPrivateKey,
-            expiresIn: `${this.configService.get<string>(
-                'JWT_ACCESS_TOKEN_EXPIRATION_TIME'
-            )}s`,
+            expiresIn:  this.configService.get<string>('accessTokenExpiredTime'),
         });
     }
 
@@ -40,9 +36,7 @@ export class AuthRefreshTokenService{
             {
                 algorithm: 'RS256',
                 privateKey: refreshTokenPrivateKey,
-                expiresIn: `${this.configService.get<string>(
-                    'JWT_REFRESH_TOKEN_EXPIRATION_TIME'
-                )}s`,
+                expiresIn: this.configService.get<string>('refreshTokenExpiredTime'),
             })
         if(currentRefreshToken && currentRefreshTokenExpiredAt){
             if(
@@ -67,20 +61,21 @@ export class AuthRefreshTokenService{
         })
     }
 
-    generateTokenPair(
+    async generateTokenPair(
         payLoad: TokenPayLoad,
         currentRefreshToken?: string,
         currentRefreshTokenExpiredAt?: Date,
     ){
+        const accessToken = this.generateToken(payLoad)
+        const refreshToken = await this.generateRefreshToken(
+            payLoad,
+            currentRefreshToken,
+            currentRefreshTokenExpiredAt
+        )
 
         return {
-            accessToken: this.generateToken(payLoad),
-
-            refreshToken: this.generateRefreshToken(
-                payLoad,
-                currentRefreshToken,
-                currentRefreshTokenExpiredAt
-            )
+            accessToken,
+            refreshToken,
         }
     }
     

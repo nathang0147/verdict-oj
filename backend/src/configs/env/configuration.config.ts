@@ -1,5 +1,5 @@
 import * as process from 'node:process';
-import {accessTokenPublicKey} from "../../contraints/jwt.contraints";
+import {accessTokenPrivateKey, accessTokenPublicKey} from "../../contraints/jwt.contraints";
 
 export interface DatabaseConfig {
 	host: string;
@@ -22,7 +22,9 @@ export const NodeEnv = {
 export interface EnvironmentVariables {
 	NODE_ENV: string;
 	jwtSecret: string;
-	accessTokenExpiredTime: string;
+	jwtPrivateKey: string;
+	accessTokenExpiredTime: number;
+	refreshTokenExpiredTime: number;
 	database: DatabaseConfig;
 }
 
@@ -30,7 +32,9 @@ export default (): EnvironmentVariables => {
 	return {
 		NODE_ENV: process.env.NODE_ENV || 'development',
 		jwtSecret: accessTokenPublicKey,
-		accessTokenExpiredTime: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+		jwtPrivateKey: accessTokenPrivateKey,
+		accessTokenExpiredTime: parseInt(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME),
+		refreshTokenExpiredTime: parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME),
 		database: {
 			host: process.env.DB_HOST,
 			port: parseInt(process.env.DB_PORT),

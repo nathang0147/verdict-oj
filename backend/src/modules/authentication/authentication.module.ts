@@ -19,16 +19,7 @@ import {EnvironmentVariables} from "@configs/env/configuration.config";
       TypeOrmModule.forFeature([RefreshToken]),
       UserModule,
       PassportModule,
-      JwtModule.registerAsync({
-          inject: [ConfigService],
-          useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
-              secret: configService.get('jwtSecret'),
-              signOptions: {
-                    algorithm: 'RS256',
-                  expiresIn: configService.get('accessTokenExpiredTime'),
-              },
-          }),
-      })
+      JwtModule.register({})
   ],
   controllers: [AuthenticationController],
   providers: [

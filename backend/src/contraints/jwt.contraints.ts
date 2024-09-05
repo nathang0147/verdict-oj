@@ -37,8 +37,7 @@ function getAccessTokenKeyPair(){
     if(!accessTokenPrivateKeyExists || !accessTokenPublicKeyExists){
 
         //'rsa' the algorithm for generating the key pair, the other popular is RSA, RSA-PSS, DSA, EC, Ed25519, Ed448, X25519, X448,DH
-        const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa',
-            {
+        const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {
             modulusLength: 2048, //the length of the key by bits, recommended to use at least 4096 bits but for testing purpose 2048 bits is enough
 
             publicKeyEncoding: {
@@ -91,7 +90,7 @@ function getRefreshTokenKeyPair(){
     const refreshTokenPublicKeyExists = fs.existsSync(refreshTokenPublicKeyPath)
 
     //if not exist, create file using fs.writeFile
-    if(!fs.existsSync(refreshTokenPrivateKeyPath) || !fs.existsSync(refreshTokenPublicKeyPath)){
+    if(!refreshTokenPrivateKeyExists || !refreshTokenPublicKeyExists){
         const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {
             modulusLength: 2048,
             publicKeyEncoding: {
