@@ -1,5 +1,13 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 import {BaseEntity} from "@modules/share/base/base.entity";
+import {Exclude} from "class-transformer";
+import {Submission} from "@modules/submission/entities/submission.entity";
+
+export enum PROBLEM_STATUS {
+    UNSOLVED=0,
+    TRIED=1,
+    SOLVED=2,
+}
 
 @Entity('t_problem')
 export class Problem extends BaseEntity{
@@ -10,19 +18,30 @@ export class Problem extends BaseEntity{
     description: string;
 
     @Column()
-    input: string;
+    sampleInput: string;
 
     @Column()
-    output: string;
+    sampleOutput: string;
 
     @Column()
-    level: number;
+    difficulty: number;
 
     @Column()
+    @Exclude()
     runtimeLimit: number;
 
     @Column()
+    @Exclude()
     memoryLimit: number;
+
+    @Column()
+    hint: string[];
+
+    @Column()
+    tags: string[];
+
+    @OneToMany(() => Submission, submission => submission.problemId)
+    submissions: Submission[];
 
     @CreateDateColumn()
     createdAt: Date;
