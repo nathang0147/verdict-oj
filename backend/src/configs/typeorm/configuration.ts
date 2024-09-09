@@ -2,6 +2,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { config as dotenvConfig } from 'dotenv';
 import * as process from 'node:process';
 import { registerAs } from '@nestjs/config';
+import 'tsconfig-paths/register';
 
 dotenvConfig({ path: '.env.dev' });
 
@@ -14,7 +15,7 @@ const config = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [isDevEnv ? 'src/**/entities/*.ts' : 'dist/**/entities/*.js'],
+    entities: ['dist/**/entities/*.js'],
     migrations: [isDevEnv ? 'src/migrations/*.ts' : 'dist/migrations/*.js'],
     timezone: process.env.DB_TIMEZONE || 'UTC',
     synchronize: process.env.TYPEORM_SYNC === 'true' || false,
