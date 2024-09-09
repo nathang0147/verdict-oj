@@ -8,11 +8,11 @@ import {User} from "@modules/user/entities/user.entity";
 export class Submission extends BaseEntity{
     @Column()
     @ManyToOne(type => User, user => user.id)
-    userId: number; //relation with user
+    userId: string; //relation with user
 
     @Column()
     @ManyToOne(type => Problem, problem => problem.id)
-    problemId: number; //relation with problem
+    problemId: string; //relation with problem
 
     @Column()
     code: string;
