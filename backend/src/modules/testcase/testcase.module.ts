@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TestcaseService } from './testcase.service';
-import { TestcaseController } from './testcase.controller';
+import {TypeOrmModule} from "@nestjs/typeorm";
+import {Testcase} from "@modules/testcase/entities/testcase.entity";
+import {TestcaseRepository} from "@repositories/testcase.repository";
 
 @Module({
-  controllers: [TestcaseController],
-  providers: [TestcaseService],
+  imports: [TypeOrmModule.forFeature([Testcase])],
+  controllers: [],
+  providers: [TestcaseService, { provide: 'TestcaseRepositoryInterface', useClass: TestcaseRepository}],
+  exports: [TestcaseService, TypeOrmModule.forFeature([Testcase])],
 })
 export class TestcaseModule {}
