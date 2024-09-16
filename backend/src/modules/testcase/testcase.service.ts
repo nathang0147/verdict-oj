@@ -8,11 +8,11 @@ export class TestcaseService {
         private readonly testcaseRepository: TestcaseRepositoryInterface
     ) {}
 
-    async getSampleTestcases(problemId: string, numberCases: number) {
+    async getSampleTestcases(problemId: number, numberCases: number) {
         return await this.testcaseRepository.getSampleTestcases(problemId, numberCases);
     }
 
-    async searchTestcasesByProblemId(problemId: string, input?: string, output?: string) {
+    async searchTestcasesByProblemId(problemId: number, input?: string, output?: string) {
         return await this.testcaseRepository.searchTestcasesByProblemId(problemId, input, output);
     }
 }

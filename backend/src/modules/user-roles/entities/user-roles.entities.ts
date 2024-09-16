@@ -1,6 +1,6 @@
-import {BaseEntity} from "@modules/share/base/base.entity";
 import {Exclude, Expose} from "class-transformer";
 import {Column, Entity} from "typeorm";
+import {BaseNumIdEntity} from "@modules/share/base/baseNumId.entity";
 
 export enum USER_ROLES{
     ADMIN = 'Admin',
@@ -9,7 +9,7 @@ export enum USER_ROLES{
 
 @Exclude()
 @Entity({name: 'user_roles'})
-export class UserRoles extends BaseEntity{
+export class UserRoles extends BaseNumIdEntity{
     @Column({
         unique: true,
         default: USER_ROLES.USER,

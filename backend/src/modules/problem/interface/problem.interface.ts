@@ -5,30 +5,30 @@ import {FindDto} from "../../../api/utils/find.dto";
 import {FindAllResponse} from "../../../types/common.type";
 import {Submission} from "@modules/submission/entities/submission.entity";
 import {Testcase} from "@modules/testcase/entities/testcase.entity";
-import {SubmissionLanguage} from "@modules/submission/entities/enum/submission.enum";
+import {SubmitDto} from "@modules/problem/dto/submit.dto";
 
 export interface ProblemRepositoryInterface extends BaseRepositoryInterface<Problem>{
-    findOneWithRelations(id: string, relation: FindOptionsRelations<Problem>): Promise<Problem>;
+    findOneWithRelations(id: number, relation: FindOptionsRelations<Problem>): Promise<Problem>;
 
     findAllWithSubFields(condition: object, findDto: FindDto<Problem>): Promise<FindAllResponse<Problem>>;
 
-    getProblemsWithTag(tag: string): Promise<FindAllResponse<Problem>>;
+    getProblemsWithTag(tag: string): Promise<any[]>;
 
     getProblemsWithDifficulty(difficulty: number): Promise<FindAllResponse<Problem>>;
 
     searchProblems(code?: string, title?: string): Promise<Problem[]>
 
-    getSubmissionByProblemId(problemId: string): Promise<Submission[]>
+    getSubmissionByProblemId(problemId: number): Promise<Submission[]>
 
-    getSubmissionByUserIdAndProblemId(userId: string, problemId: string): Promise<Submission[]>
+    getSubmissionByUserIdAndProblemId(userId: string, problemId: number): Promise<Submission[]>
 
-    searchTestcasesByProblemId(problemId: string, input?: string, output?: string): Promise<Testcase[]>
+    searchTestcasesByProblemId(problemId: number, input?: string, output?: string): Promise<Testcase[]>
 
-    submit(userId: string, problemId: string, code: string, language: SubmissionLanguage): Promise<string>
+    submit(submitDto : SubmitDto): Promise<number>
 
     getTotalProblemsCount(): Promise<number>
 
-    getSubmissionCount(problemId: string): Promise<number>
+    getSubmissionCount(problemId: number): Promise<number>
 
-    getAcceptedSubmissionCount(problemId: string): Promise<number>
+    getAcceptedSubmissionCount(problemId: number): Promise<number>
 }

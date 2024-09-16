@@ -1,11 +1,11 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToMany} from "typeorm";
 import {Exclude} from "class-transformer"
-import {BaseEntity} from "@modules/share/base/base.entity";
 import Role from "@modules/authorization/contrants/role.enum";
+import {BaseUUIDEntity} from "@modules/share/base/baseUUID.entity";
+import {Submission} from "@modules/submission/entities/submission.entity";
 
 @Entity({name: '_user'})
-export class User extends BaseEntity{
-
+export class User extends BaseUUIDEntity{
     @Column()
     username: string;
 
@@ -22,4 +22,7 @@ export class User extends BaseEntity{
         default: Role.USER
     })
     role: string;
+
+    @OneToMany(()=>Submission, submission => submission.userId)
+    submissions: Submission[];
 }

@@ -5,22 +5,22 @@ import {Problem} from "@modules/problem/entities/problem.entity";
 import {User} from "@modules/user/entities/user.entity";
 
 export interface SubmissionRepositoryInterface extends BaseRepositoryInterface<Submission>{
-    getSubmissionByUserIdAndProblemId(userId: string, problemId: string): Promise<Submission[]>;
+    getSubmissionByUserIdAndProblemId(userId: string, problemId: number): Promise<Submission[]>;
 
     getSubmissionByUserId(userId: string): Promise<FindAllResponse<Submission>>;
 
-    getSubmissionByProblemId(problemId: string): Promise<FindAllResponse<Submission>>;
+    getSubmissionByProblemId(problemId: number): Promise<FindAllResponse<Submission>>;
 
     getTotalSubmissionsCount(): Promise<number>;
 
-    getTotalSubmissionsCountByProblemId(problemId: string): Promise<number>;
+    getTotalSubmissionsCountByProblemId(problemId: number): Promise<number>;
 
     getSubmissionsList(page: number): Promise<any[]>;
 
-    getSubmissionListByProblemId(problemId: string, page: number): Promise<any[]>;
+    getSubmissionListByProblemId(problemId: number, page: number): Promise<any[]>;
 
-    getProblem(submissionId: string): Promise<Problem>;
+    getProblem(submissionId: number): Promise<Problem>;
 
-    getUser(submissionId: string): Promise<User>;
+    getUser(submissionId: number): Promise<User>;
 
 }

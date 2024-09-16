@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {SubmissionService} from './submission.service';
 import {SubmissionController} from './submission.controller';
 import {SubmissionRepository} from "@repositories/submission.repository";
@@ -10,7 +10,7 @@ import {UserModule} from "@modules/user/user.module";
 @Module({
     imports: [
         UserModule,
-        ProblemModule,
+        forwardRef(() => ProblemModule),
         TypeOrmModule.forFeature([Submission])],
     controllers: [SubmissionController],
     providers: [

@@ -2,8 +2,9 @@ import {PassportStrategy} from "@nestjs/passport";
 import {Strategy, ExtractJwt} from "passport-jwt";
 import {UserService} from "@modules/user/user.service";
 import {TokenPayLoad} from "@modules/authentication/interfaces/token.interface";
-import {Injectable} from "@nestjs/common";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {accessTokenPublicKey} from "src/contraints/jwt.contraints";
+import {AuthenticationError} from "@azure/identity";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -17,6 +18,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         });
     }
     async validate(payload: TokenPayLoad) {
-        return await this.userService.findOne(payload.userId);
+        const user = await this.userService.findOne(payload.userId);
+
+        if (!user) {
+            throw new UnauthorizedException();
+        }
+
+        return user;
     }
 }

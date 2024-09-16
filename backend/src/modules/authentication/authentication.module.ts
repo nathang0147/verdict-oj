@@ -10,9 +10,6 @@ import {PassportModule} from "@nestjs/passport";
 import {JwtStrategy} from "@modules/authentication/stategy/jwt.strategy";
 import {JwtModule} from "@nestjs/jwt";
 import {JwtRefreshStrategy} from "@modules/authentication/stategy/jwt-refresh.strategy";
-import {accessTokenPublicKey} from "../../contraints/jwt.contraints";
-import {ConfigService} from "@nestjs/config";
-import {EnvironmentVariables} from "@configs/env/configuration.config";
 
 @Module({
   imports: [

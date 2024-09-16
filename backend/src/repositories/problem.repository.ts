@@ -9,6 +9,8 @@ import {FindAllResponse} from "../types/common.type";
 import {Submission} from "@modules/submission/entities/submission.entity";
 import {Testcase} from "@modules/testcase/entities/testcase.entity";
 import {SubmissionLanguage, SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";
+import {ProblemTag} from "@modules/problem-tag/entities/problem-tag.entity";
+import {SubmitDto} from "@modules/problem/dto/submit.dto";
 
 @Injectable()
 export class ProblemRepository
@@ -22,7 +24,10 @@ export class ProblemRepository
         private readonly submissionRepository: Repository<Submission>,
 
         @InjectRepository(Testcase)
-        private readonly testcaseRepository: Repository<Testcase>
+        private readonly testcaseRepository: Repository<Testcase>,
+
+        @InjectRepository(ProblemTag)
+        private readonly problemTagRepository: Repository<ProblemTag>
     ) {
         super(problemRepository);
     }
@@ -34,14 +39,14 @@ export class ProblemRepository
             .getMany();
     }
 
-    async getSubmissionByProblemId(problemId: string): Promise<Submission[]> {
+    async getSubmissionByProblemId(problemId: number): Promise<Submission[]> {
         return await this.submissionRepository.find({
             where: {problemId},
             order: {createdAt: "DESC"},
         });
     }
 
-    async getSubmissionByUserIdAndProblemId(userId: string, problemId: string): Promise<Submission[]> {
+    async getSubmissionByUserIdAndProblemId(userId: string, problemId: number): Promise<Submission[]> {
         return await this.submissionRepository.find({
             where: {
                 userId,
@@ -51,41 +56,35 @@ export class ProblemRepository
         });
     }
 
-    async searchTestcasesByProblemId(problemId: string, input?: string, output?: string): Promise<Testcase[]> {
-        return await this.testcaseRepository.find({
-            where:{
-                problemId,
-                ...(input ? {input: input} : {}),
-                ...(output ? {output: output} : {}),
-            }
+    async searchTestcasesByProblemId(problemId: number, input?: string, output?: string): Promise<Testcase[]> {
+        return await this.testcaseRepository.findBy({
+            problemId,
+            input: input ? input : undefined,
+            output: output ? output : undefined
         })
     }
 
-    async submit(userId: string, problemId: string, code: string, language: SubmissionLanguage): Promise<string> {
-        const submitAnswer =  this.submissionRepository.create({
-            userId,
-            problemId,
-            code,
-            language,
-            status: SubmissionStatus.STATUS_PENDING
-        });
+    async submit(submitDto : SubmitDto): Promise<number> {
+        const submitAnswer =  this.submissionRepository.create(submitDto);
 
-        await this.submissionRepository.save(submitAnswer);
+        const savedAnswer = await this.submissionRepository.save(submitAnswer);
 
-        return submitAnswer.id;
+        return savedAnswer.id;
+
+
     }
 
     async getTotalProblemsCount(): Promise<number> {
         return await this.problemRepository.count();
     }
 
-    async getSubmissionCount(problemId: string): Promise<number> {
+    async getSubmissionCount(problemId: number): Promise<number> {
         return await this.submissionRepository.count(
             {where: {problemId}}
         );
     }
 
-    async getAcceptedSubmissionCount(problemId: string): Promise<number> {
+    async getAcceptedSubmissionCount(problemId: number): Promise<number> {
         return await this.submissionRepository.count(
             {where: {
                 problemId,
@@ -93,7 +92,7 @@ export class ProblemRepository
             }});
     }
 
-    async findOneWithRelations(id: string, relation: FindOptionsRelations<Problem>): Promise<Problem> {
+    async findOneWithRelations(id: number, relation: FindOptionsRelations<Problem>): Promise<Problem> {
         return await this.problemRepository.findOne({
             where: {id},
             relations: relation
@@ -111,8 +110,25 @@ export class ProblemRepository
 
         return {count, items};
     }
-    async getProblemsWithTag(tags: string): Promise<FindAllResponse<Problem>> {
-        return await this.findAllWithSubFields({tags}, {limit: -1, offset: 0});
+    async getProblemsWithTag(tags: string): Promise<any[]> {
+        return this.problemTagRepository.createQueryBuilder('pt')
+            .select([
+                'p.id AS id',
+                'p.title AS title',
+                'p.description AS description',
+                'p.difficulty AS difficulty',
+                'p.runtimeLimit AS runtime',
+                'p.memoryLimit AS memory',
+                'p.hint AS hint',
+                't.name AS tag',
+                'p.createdAt AS createdAt',
+            ])
+            .leftJoin('pt.problemId', 'p')
+            .leftJoin('pt.tagId', 't')
+            .where('t.name IN (:...tags)', {tags: tags.split(',')})
+            .orderBy('p.id', 'DESC')
+            .getRawMany()
+
     }
     async getProblemsWithDifficulty(difficulty: number): Promise<FindAllResponse<Problem>> {
         return await this.findAllWithSubFields({difficulty}, {limit: -1, offset: 0});

@@ -13,7 +13,7 @@ export class SubmissionService extends BaseServiceAbstract<Submission> {
         super(submissionRepository);
     }
 
-    async getSubmissionByUserIdAndProblemId(userId: string, problemId: string): Promise<Submission[]> {
+    async getSubmissionByUserIdAndProblemId(userId: string, problemId: number): Promise<Submission[]> {
         return await this.submissionRepository.getSubmissionByUserIdAndProblemId(userId, problemId);
     }
 
@@ -33,7 +33,7 @@ export class SubmissionService extends BaseServiceAbstract<Submission> {
         return await this.submissionRepository.getTotalSubmissionsCount();
     }
 
-    async getTotalSubmissionsCountByProblemId(problemId: string): Promise<number> {
+    async getTotalSubmissionsCountByProblemId(problemId: number): Promise<number> {
         return await this.submissionRepository.getTotalSubmissionsCountByProblemId(problemId);
     }
 
@@ -41,18 +41,18 @@ export class SubmissionService extends BaseServiceAbstract<Submission> {
         return await this.submissionRepository.getSubmissionsList(page);
     }
 
-    async getSubmissionListByProblemId(problemId: string, page: number): Promise<any[]> {
+    async getSubmissionListByProblemId(problemId: number, page: number): Promise<any[]> {
         return await this.submissionRepository.getSubmissionListByProblemId(problemId, page);
     }
 
-    async getSubmissionAndProblem(submissionId: string): Promise<any> {
+    async getSubmissionAndProblem(submissionId: number): Promise<any> {
         const submission = await this.submissionRepository.findOneById(submissionId);
         if (!submission) {
             throw new Error('Submission not found');
         }
 
         const problem = await this.submissionRepository.getProblem(submission.problemId);
-        const user = await this.submissionRepository.getUser(submission.userId);
+        const user = await this.submissionRepository.getUser(submissionId);
 
         return {
             submission,

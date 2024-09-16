@@ -12,7 +12,7 @@ export class TagService extends BaseServiceAbstract<Tag>{
         super(tagRepository);
     }
 
-    async searchTags(id: string, name: string) {
+    async searchTags(id: number, name: string) {
         return await this.tagRepository.searchTags(id, name);
     }
 
@@ -34,5 +34,9 @@ export class TagService extends BaseServiceAbstract<Tag>{
 
     async getTags() {
         return await this.tagRepository.findAll();
+    }
+
+    async getTagsWithProblemId(problemId: number) {
+        return await this.tagRepository.getTagsWithProblemId(problemId);
     }
 }

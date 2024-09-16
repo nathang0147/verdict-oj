@@ -14,11 +14,11 @@ export class ProblemTagService {
         return await this.problemTagRepository.create( createDto );
     }
 
-    async getProblemByTagId(tagId: string): Promise<ProblemTag> {
+    async getProblemByTagId(tagId: number): Promise<ProblemTag> {
         return await this.problemTagRepository.findOneByCondition({tagId});
     }
 
-    async deleteProblemTag(tagId: string): Promise<boolean> {
+    async deleteProblemTag(tagId: number): Promise<boolean> {
         return this.problemTagRepository.permanentDelete(tagId);
     }
 }

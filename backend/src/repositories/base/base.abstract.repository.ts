@@ -3,6 +3,7 @@ import {BaseRepositoryInterface} from "@repositories/base/base.interface.reposit
 import {BaseEntity} from "@modules/share/base/base.entity";
 import {FindAllResponse} from "../../types/common.type";
 import {FindDto} from "../../api/utils/find.dto";
+import {isNumber} from "../../utils/type-guards";
 
 
 export abstract class BaseRepositoryAbstract<T extends BaseEntity>
@@ -18,12 +19,14 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
     }
 
     async findOneById(
-        id: string,
+        id:  string | number,
         projection?: (keyof T)[],
         options?: FindOneOptions<T>,
     ): Promise<T | null> {
+        const parsedId = isNumber(id)? Number(id): id;
+
         const findOptions: FindOneOptions<T> = {
-            where: { id } as any,
+            where: { parsedId } as any,
             select: projection,
             ...options
         };
@@ -48,24 +51,29 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
         return { count, items };
     }
 
-    async update(id: string, dto: DeepPartial<T>): Promise<T | null> {
-        await this.model.update(id, dto as any);
+    async update(id: string | number, dto: DeepPartial<T>): Promise<T | null> {
+        const parsedId = isNumber(id)? Number(id): id;
+        await this.model.update(parsedId, dto as any);
         return await this.model.findOne({
-            where: {id, deletedAt: null} as any,
+            where: {parsedId, deletedAt: null} as any,
         })
     }
 
-    async softDelete(id: string): Promise<boolean> {
-        const item = await this.model.findOne(id as any);
+    async softDelete(id: string | number): Promise<boolean> {
+        const parsedId = isNumber(id)? Number(id): id;
+
+        const item = await this.model.findOne(parsedId as any);
         if(!item) return false;
 
-        const result = await this.model.update(id, {deletedAt: new Date()} as any);
+        const result = await this.model.update(parsedId, {deletedAt: new Date()} as any);
 
         return result.affected ===1;
     }
 
-    async permanentDelete(id: string): Promise<boolean> {
-        const result = await this.model.delete(id);
+    async permanentDelete(id: string | number): Promise<boolean> {
+        const parsedId = isNumber(id)? Number(id): id;
+
+        const result = await this.model.delete(parsedId as any);
         return result.affected ===1;
     }
 }

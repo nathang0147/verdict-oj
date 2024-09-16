@@ -4,6 +4,7 @@ import {BaseRepositoryInterface} from "@repositories/base/base.interface.reposit
 import {DeepPartial, FindManyOptions, FindOneOptions, FindOptionsWhere} from "typeorm";
 import {FindAllResponse} from "../../types/common.type";
 import {FindDto} from "../../api/utils/find.dto";
+import {isNumber} from "../../utils/type-guards";
 
 export abstract class BaseServiceAbstract<T extends BaseEntity>
     implements BaseServiceInterface<T>
@@ -16,11 +17,11 @@ export abstract class BaseServiceAbstract<T extends BaseEntity>
 
     async findAll(filter?:FindOptionsWhere<T>, options?: object): Promise<FindAllResponse<T>> {
         return await this.repository.findAll(filter, options);
-
     }
 
-    async findOne(id: string): Promise<T> {
-        return await this.repository.findOneById(id);
+    async findOne(id: string | number): Promise<T> {
+        const parsedId = isNumber(id)? Number(id): id;
+        return await this.repository.findOneById(parsedId);
     }
 
     async findOneByCondition(condition: FindOptionsWhere<T>, filter?: (keyof T)[]): Promise<T> {
@@ -30,11 +31,18 @@ export abstract class BaseServiceAbstract<T extends BaseEntity>
         return await this.repository.findOneByCondition(condition, filter);
     }
 
-    async update(id: string, item: DeepPartial<T>): Promise<T> {
-        return this.repository.update(id, item);
+    async update(id: string | number, item: DeepPartial<T>): Promise<T> {
+        const parsedId = isNumber(id)? Number(id): id;
+        return this.repository.update(parsedId, item);
     }
 
-    async remove(id: string): Promise<boolean> {
-        return this.repository.softDelete(id);
+    async remove(id: string | number): Promise<boolean> {
+        const parsedId = isNumber(id)? Number(id): id;
+        return this.repository.softDelete(parsedId);
+    }
+
+    async delete(id: string | number): Promise<boolean> {
+        const parsedId = isNumber(id)? Number(id): id;
+        return this.repository.permanentDelete(parsedId);
     }
 }

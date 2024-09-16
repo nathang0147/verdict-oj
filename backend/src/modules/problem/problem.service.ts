@@ -4,6 +4,11 @@ import {BaseServiceAbstract} from "../../services/base/base.abstract.service";
 import {ProblemRepositoryInterface} from "@modules/problem/interface/problem.interface";
 import {FindDto} from "../../api/utils/find.dto";
 import {SubmissionLanguage} from "@modules/submission/entities/enum/submission.enum";
+import {string} from "joi";
+import {CACHE_MANAGER} from "@nestjs/cache-manager";
+import {Cache} from "cache-manager";
+import {RedisService} from "@modules/cache/redis.service";
+import {SubmitDto} from "@modules/problem/dto/submit.dto";
 
 @Injectable()
 export class ProblemService extends BaseServiceAbstract<Problem>{
@@ -11,13 +16,16 @@ export class ProblemService extends BaseServiceAbstract<Problem>{
     constructor(
         @Inject('ProblemRepositoryInterface')
         private readonly problemRepository: ProblemRepositoryInterface,
+
+        @Inject(CACHE_MANAGER) private cacheService: Cache,
+
+        @Inject()
+        private readonly redisService: RedisService,
     ) {
         super(problemRepository);
     }
 
     async getProblemsWithStatus(userId: string, findDto: FindDto<Problem>) {
-        const userTriedCountKey = 'SampleKey';
-
         const {items: problems,count} = await this.problemRepository.findAllWithSubFields({}, findDto);
 
         const result = await Promise.all(problems.map(async (problem) => {
@@ -30,7 +38,7 @@ export class ProblemService extends BaseServiceAbstract<Problem>{
                 status = PROBLEM_STATUS.SOLVED;
             }else{
                 //check if a specific problem has been attempted by the user.
-                const tried = 0;
+                const tried = await this.redisService.getBit(`userTriedKeyCount:${userId}`, problem.id );
                 if(tried) {
                     status = PROBLEM_STATUS.TRIED;
                 }else {
@@ -63,19 +71,33 @@ export class ProblemService extends BaseServiceAbstract<Problem>{
         return this.problemRepository.searchProblems(code, title);
     }
 
-    async getSubmissionByProblemId(problemId: string) {
+    async getSubmissionByProblemId(problemId: number) {
         return this.problemRepository.getSubmissionByProblemId(problemId);
     }
 
-    async searchTestcasesByProblemId(problemId: string, input?: string, output?: string) {
+    async searchTestcasesByProblemId(problemId: number, input?: string, output?: string) {
         return this.problemRepository.searchTestcasesByProblemId(problemId, input, output);
     }
 
-    async submit(userId: string, problemId: string, code: string, language: SubmissionLanguage) {
-        return this.problemRepository.submit(userId, problemId, code, language);
+    async submit(submitDto: SubmitDto) {
+        if(submitDto.problemId ===null||!Object.values(SubmissionLanguage).includes(submitDto.language)){
+            return {
+                code: 1,
+                message: 'Parameter ProblemId or Language is missing'
+            }
+        }
+
+        const submissionId = await this.problemRepository.submit(submitDto);
+
+        await this.redisService.setBit(`userTriedKeyCount:${submitDto.userId}`, submitDto.problemId, PROBLEM_STATUS.TRIED)
+        return {
+            code: 0,
+            message: 'Success',
+            data: submissionId
+        }
     }
 
-    async getAcceptedSubmissionCount(problemId: string) {
+    async getAcceptedSubmissionCount(problemId: number) {
         return this.problemRepository.getAcceptedSubmissionCount(problemId);
     }
 
@@ -83,7 +105,7 @@ export class ProblemService extends BaseServiceAbstract<Problem>{
         return this.problemRepository.getTotalProblemsCount();
     }
 
-    async getSubmissionCount(problemId: string) {
+    async getSubmissionCount(problemId: number) {
         return this.problemRepository.getSubmissionCount(problemId);
     }
 

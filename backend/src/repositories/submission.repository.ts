@@ -20,7 +20,7 @@ export class SubmissionRepository
         super(submissionRepository);
     }
 
-    async getSubmissionByUserIdAndProblemId(userId: string, problemId: string): Promise<Submission[]> {
+    async getSubmissionByUserIdAndProblemId(userId: string, problemId: number): Promise<Submission[]> {
         return await this.submissionRepository.find({
             where: {userId: userId, problemId: problemId},
         });
@@ -31,7 +31,7 @@ export class SubmissionRepository
         });
         return {count, items};
     }
-    async getSubmissionByProblemId(problemId: string): Promise<FindAllResponse<Submission>> {
+    async getSubmissionByProblemId(problemId: number): Promise<FindAllResponse<Submission>> {
         const [items, count] = await this.submissionRepository.findAndCount({
             where: {problemId: problemId},
         });
@@ -41,7 +41,7 @@ export class SubmissionRepository
     getTotalSubmissionsCount(): Promise<number> {
         return this.submissionRepository.count()
     }
-    getTotalSubmissionsCountByProblemId(problemId: string): Promise<number> {
+    getTotalSubmissionsCountByProblemId(problemId: number): Promise<number> {
         return this.submissionRepository.count({
             where: {problemId}
         })
@@ -65,7 +65,7 @@ export class SubmissionRepository
                 qb => qb
                     .select('id')
                     .from(Submission, 'sub')
-                    .orderBy('sub.created_at', 'DESC')
+                    .orderBy('sub.id', 'DESC')
                     .limit(limit)
                     .offset(offset),
                 't',
@@ -73,11 +73,11 @@ export class SubmissionRepository
             )
             .leftJoin(Problem, 'p', 's.problemId = p.id')
             .leftJoin(User,'u', 's.userId = u.id')
-            .orderBy('s.created_at', 'DESC')
+            .orderBy('s.id', 'DESC')
             .getRawMany();
         return submissions;
     }
-    getSubmissionListByProblemId(problemId: string, page: number): Promise<any[]> {
+    getSubmissionListByProblemId(problemId: number, page: number): Promise<any[]> {
         const limit = parseInt(process.env.PAGINATION_PER_PAGE, 10) || 10;
         const offset = limit * (page - 1);
         return this.submissionRepository.createQueryBuilder('s')
@@ -94,7 +94,7 @@ export class SubmissionRepository
                 qb => qb
                     .select('id')
                     .from(Submission, 'sub')
-                    .orderBy('sub.created_at', 'DESC')
+                    .orderBy('sub.id', 'DESC')
                     .limit(limit)
                     .offset(offset),
                 't',
@@ -103,19 +103,20 @@ export class SubmissionRepository
             .leftJoin(Problem, 'p', 's.problemId = p.id')
             .leftJoin(User,'u', 's.userId = u.id')
             .where('s.problemId = :problemId', {problemId})
-            .orderBy('s.created_at', 'DESC')
+            .orderBy('s.id', 'DESC')
             .getRawMany();
     }
 
-    async getProblem(submissionId: string): Promise<Problem> {
+    async getProblem(submissionId: number): Promise<Problem> {
         return await this.submissionRepository.createQueryBuilder('s')
             .select('p.id AS problem_id')
             .innerJoin(Problem, 'p', 's.problemId = p.id')
             .where('s.id = :submissionId', {submissionId})
+            .orderBy('s.id', 'DESC')
             .getRawOne();
     }
 
-    async getUser(submissionId: string): Promise<User> {
+    async getUser(submissionId: number): Promise<User> {
         return await this.submissionRepository.createQueryBuilder('s')
             .select('u.id AS id')
             .innerJoin(User, 'u', 's.userId = u.id')

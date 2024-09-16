@@ -4,8 +4,8 @@ import {FindDto} from "../../api/utils/find.dto";
 
 export interface Write<T> {
     create(item: T | DeepPartial<T>): Promise<T>;
-    update(id: string, item: DeepPartial<T>): Promise<T>;
-    remove(id: string): Promise<boolean>;
+    update(id: string | number, item: DeepPartial<T>): Promise<T>;
+    remove(id: string | number): Promise<boolean>;
 }
 
 export interface Read<T> {
@@ -13,7 +13,7 @@ export interface Read<T> {
         filter?: object,
         option?: object,
     ): Promise<FindAllResponse<T>>;
-    findOne(id: string): Promise<T>;
+    findOne(id: string | number): Promise<T>;
     findOneByCondition(condition: FindOptionsWhere<T>, projection?: (keyof T)[]): Promise<T>;
 }
 

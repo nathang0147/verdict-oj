@@ -1,25 +1,27 @@
-import {Controller, Get, Param, Query, Req, Res} from '@nestjs/common';
+import {Body, Controller, Get, Param, Query, Req, Res} from '@nestjs/common';
 import { SubmissionService } from './submission.service';
 import {Request} from "express";
+import {ConfigService} from "@nestjs/config";
 
 @Controller('submission')
 export class SubmissionController {
-  constructor(private readonly submissionService: SubmissionService) {}
+  constructor(
+      private readonly submissionService: SubmissionService,
+      private readonly configService: ConfigService
+  ) {}
 
   @Get('/page')
-  getSubmissionList(@Query('page') page: number|1) {
+  getSubmissionList(@Param('page') page: number|1) {
     return this.submissionService.getSubmissionsList(page);
   }
 
   @Get('/problem')
-  getSubmissionListByProblemId(
-      @Req() req: Request , @Query('page') page: number|1) {
-    const problemId = req.query.problemId as string;
+  getSubmissionListByProblemId(@Body() problemId: number, @Param('page') page: number|1) {
     return this.submissionService.getSubmissionListByProblemId(problemId, page);
   }
 
   @Get()
-  getSubmissionAndProblem(@Query('id') id: string) {
+  getSubmissionAndProblem(@Query('id') id: number) {
     try{
         return this.submissionService.getSubmissionAndProblem(id);
     }catch (e){
@@ -29,10 +31,8 @@ export class SubmissionController {
 
   @Get('/total')
   getTotalSubmissionsAndPaginate(
-      @Req() req: Request,
-      @Param('paginationPerPage') limit: number
+      @Body() page: number,
   ) {
-    const page = parseInt(<string>req.query.page) | 1;
-    return this.submissionService.getSubmissionPagination(page, limit);
+    return this.submissionService.getSubmissionPagination(page, this.configService.get('PAGINATION_PER_PAGE'));
   }
 }

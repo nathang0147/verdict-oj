@@ -14,14 +14,14 @@ export class TestcaseRepository extends BaseRepositoryAbstract<Testcase> impleme
         super(testcaseRepository);
     }
 
-    async getSampleTestcases(problemId: string, numberCases: number): Promise<Testcase[]> {
+    async getSampleTestcases(problemId: number, numberCases: number): Promise<Testcase[]> {
         return await this.testcaseRepository.createQueryBuilder('testcase')
             .where('testcase.problemId = :problemId', {problemId})
             .limit(numberCases)
             .getMany();
     }
 
-    async searchTestcasesByProblemId(problemId: string, input?: string, output?: string): Promise<Testcase[]> {
+    async searchTestcasesByProblemId(problemId: number, input?: string, output?: string): Promise<Testcase[]> {
         return await this.testcaseRepository.createQueryBuilder('testcase')
             .where('testcase.problemId = :problemId', {problemId})
             .andWhere(input ? 'testcase.input LIKE :input' : '1=1', {input})

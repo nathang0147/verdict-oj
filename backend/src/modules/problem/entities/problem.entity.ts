@@ -2,6 +2,9 @@ import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Upd
 import {BaseEntity} from "@modules/share/base/base.entity";
 import {Exclude} from "class-transformer";
 import {Submission} from "@modules/submission/entities/submission.entity";
+import {ProblemTag} from "@modules/problem-tag/entities/problem-tag.entity";
+import {BaseNumIdEntity} from "@modules/share/base/baseNumId.entity";
+import {Testcase} from "@modules/testcase/entities/testcase.entity";
 
 export enum PROBLEM_STATUS {
     UNSOLVED=0,
@@ -10,7 +13,7 @@ export enum PROBLEM_STATUS {
 }
 
 @Entity('t_problem')
-export class Problem extends BaseEntity{
+export class Problem extends BaseNumIdEntity{
     @Column()
     title: string;
 
@@ -35,17 +38,14 @@ export class Problem extends BaseEntity{
     memoryLimit: number;
 
     @Column()
-    hint: string[];
+    hint: string;
 
-    @Column()
-    tags: string[];
+    @OneToMany(()=> ProblemTag, problemTag => problemTag.problemId)
+    problemTags: ProblemTag[];
 
     @OneToMany(() => Submission, submission => submission.problemId)
     submissions: Submission[];
 
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
+    @OneToMany(() => Testcase, testcase => testcase.problemId)
+    testcases: Testcase[];
 }
