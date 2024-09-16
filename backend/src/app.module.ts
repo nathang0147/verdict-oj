@@ -1,7 +1,12 @@
 import { Module } from '@nestjs/common';
 import {ConfigModule, ConfigService} from '@nestjs/config';
 import * as process from 'node:process';
-import configurationConfig, {DatabaseConfig, EnvironmentVariables, NodeEnv} from '@configs/env/configuration.config';
+import configurationConfig, {
+	DatabaseConfig,
+	EnvironmentVariables,
+	NodeEnv,
+	RedisConfig
+} from '@configs/env/configuration.config';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {UserModule} from "@modules/user/user.module";
@@ -16,6 +21,10 @@ import {ScheduleModule} from "@nestjs/schedule";
 import {APP_GUARD} from "@nestjs/core";
 import {JwtAuthGuard} from "@modules/authentication/guard/jwt-auth.guard";
 import {RoleGuard} from "@modules/authorization/guard/role.guard";
+import {ProblemTagModule} from "@modules/problem-tag/problem-tag.module";
+import {CacheModule} from "@nestjs/cache-manager";
+import {RedisClientOptions} from "redis";
+import {redisStore} from "cache-manager-redis-yet";
 
 @Module({
 	imports: [
@@ -58,11 +67,29 @@ import {RoleGuard} from "@modules/authorization/guard/role.guard";
 					autoLoadEntities: true,
 					synchronize: Boolean(databaseConfig?.typeormSync),
 				}
-			}
+			},
+		}),
+		CacheModule.registerAsync({
+			inject: [ConfigService],
+			useFactory: async (configService: ConfigService<EnvironmentVariables>) => {
+				const redisConfig = configService.get<RedisConfig>('redis');
+				return {
+					store: redisStore,
+					password: redisConfig.password,
+					socket:{
+						host: redisConfig.host,
+						port: redisConfig.port||6379,
+					},
+					ttl: 18000,//milliseconds
+					database: 15,
+				}
+			},
+			isGlobal: true,
 		}),
 		UserModule,
 		UserRolesModule,
 		ProblemModule,
+		ProblemTagModule,
 		TestcaseModule,
 		SubmissionModule,
 		AuthenticationModule,
