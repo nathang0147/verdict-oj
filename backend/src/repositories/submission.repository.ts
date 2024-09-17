@@ -7,6 +7,7 @@ import {Injectable} from "@nestjs/common";
 import {FindAllResponse} from "../types/common.type";
 import {Problem} from "@modules/problem/entities/problem.entity";
 import {User} from "@modules/user/entities/user.entity";
+import {SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";
 
 @Injectable()
 export class SubmissionRepository
@@ -122,6 +123,13 @@ export class SubmissionRepository
             .innerJoin(User, 'u', 's.userId = u.id')
             .where('s.id = :submissionId', {submissionId})
             .getRawOne();
+    }
+
+    async getSubmissionWithStatus( status: SubmissionStatus): Promise<any> {
+        return this.submissionRepository.createQueryBuilder('s')
+            .where('status = :status', {status})
+            .groupBy('userId, problemId')
+            .getRawMany();
     }
 
 

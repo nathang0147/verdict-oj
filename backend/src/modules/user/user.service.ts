@@ -9,13 +9,15 @@ import {FindDto} from "../../api/utils/find.dto";
 import {UpdateUserDto} from "@modules/user/dto/update.user.dto";
 import {UserRolesService} from "@modules/user-roles/user-roles.service";
 import {USER_ROLES} from "@modules/user-roles/entities/user-roles.entities";
+import {RedisService} from "@modules/cache/redis.service";
 
 @Injectable()
 export class UserService extends BaseServiceAbstract<User>{
     constructor(
         @Inject('UsersRepositoryInterface')
         private readonly usersRepository: UsersRepositoryInterfaces,
-        private readonly userRolesService: UserRolesService
+        private readonly redisService: RedisService,
+
     ) {
         super(usersRepository);
     }
@@ -41,6 +43,27 @@ export class UserService extends BaseServiceAbstract<User>{
         }catch (e) {
             throw e
         }
+    }
+
+    async getUserRanking(offset: number, limit: number): Promise<any>{
+        const {count, items} = await this.usersRepository.getAllUserWithAcceptedSubmission(offset, limit);
+
+        const result = await Promise.all(items.map(async (item) => {
+            const user = await this.usersRepository.findOneById(item.user_id);
+            const submissions = await this.usersRepository.getSubmissionCount(item.user_id);
+            const percentage = (await this.usersRepository.getAcceptedSubmissionCount(item.user_id) * 100) / submissions;
+            const formattedPercentage = percentage.toFixed(2);
+            return {
+                username: user.username,
+                solved: item.count,
+                tried: this.redisService.bitCount(`userTriedCountKey:${item.user_id}`),
+                submissions: submissions,
+                accepted: submissions === 0 ? 0 : formattedPercentage,
+                since: user.createdAt
+            }
+        }))
+
+        return result;
     }
 
 }

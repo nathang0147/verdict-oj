@@ -3,6 +3,7 @@ import {BaseRepositoryInterface} from "@repositories/base/base.interface.reposit
 import {FindAllResponse} from "../../../types/common.type";
 import {Problem} from "@modules/problem/entities/problem.entity";
 import {User} from "@modules/user/entities/user.entity";
+import {SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";
 
 export interface SubmissionRepositoryInterface extends BaseRepositoryInterface<Submission>{
     getSubmissionByUserIdAndProblemId(userId: string, problemId: number): Promise<Submission[]>;
@@ -23,4 +24,5 @@ export interface SubmissionRepositoryInterface extends BaseRepositoryInterface<S
 
     getUser(submissionId: number): Promise<User>;
 
+    getSubmissionWithStatus(submissionId: number, status: SubmissionStatus): Promise<Submission>;
 }

@@ -50,4 +50,9 @@ export class UserController {
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }
+
+    @Get('ranking')
+    getUserRanking(@Body() offset: number, @Body() limit: number) {
+        return this.userService.getUserRanking(offset, limit);
+    }
 }
