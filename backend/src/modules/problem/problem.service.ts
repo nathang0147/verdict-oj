@@ -9,6 +9,7 @@ import {CACHE_MANAGER} from "@nestjs/cache-manager";
 import {Cache} from "cache-manager";
 import {RedisService} from "@modules/cache/redis.service";
 import {SubmitDto} from "@modules/problem/dto/submit.dto";
+import {QueueService} from "@modules/queue/queue.service";
 
 @Injectable()
 export class ProblemService extends BaseServiceAbstract<Problem>{
@@ -21,6 +22,9 @@ export class ProblemService extends BaseServiceAbstract<Problem>{
 
         @Inject()
         private readonly redisService: RedisService,
+
+        @Inject()
+        private readonly queueService: QueueService
     ) {
         super(problemRepository);
     }
@@ -90,6 +94,9 @@ export class ProblemService extends BaseServiceAbstract<Problem>{
         const submissionId = await this.problemRepository.submit(submitDto);
 
         await this.redisService.setBit(`userTriedKeyCount:${submitDto.userId}`, submitDto.problemId, PROBLEM_STATUS.TRIED)
+
+        await this.queueService.send({id: submissionId})
+
         return {
             code: 0,
             message: 'Success',

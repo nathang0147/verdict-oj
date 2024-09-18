@@ -25,6 +25,7 @@ import {ProblemTagModule} from "@modules/problem-tag/problem-tag.module";
 import {CacheModule} from "@nestjs/cache-manager";
 import {RedisClientOptions} from "redis";
 import {redisStore} from "cache-manager-redis-yet";
+import {QueueModule} from "@modules/queue/queue.module";
 
 @Module({
 	imports: [
@@ -94,6 +95,7 @@ import {redisStore} from "cache-manager-redis-yet";
 		SubmissionModule,
 		AuthenticationModule,
 		AuthorizationModule,
+		QueueModule,
 		ThrottlerModule.forRoot([
 			{
 				name: 'short',

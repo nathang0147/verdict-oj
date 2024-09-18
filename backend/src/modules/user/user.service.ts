@@ -66,4 +66,16 @@ export class UserService extends BaseServiceAbstract<User>{
         return result;
     }
 
+    async getSolvedProblemsCount(userId: string): Promise<number> {
+        return this.usersRepository.getSolvedProblemsCount(userId);
+    }
+
+    async getSubmissionLanguageS(userId: string): Promise<any> {
+        return this.usersRepository.getSubmissionLanguageS(userId);
+    }
+
+    async getProblemSolvedStatus(userId: string): Promise<any> {
+        return this.usersRepository.getProblemSolvedStatus(userId);
+    }
+
 }

@@ -13,13 +13,15 @@ import {ProblemTag} from "@modules/problem-tag/entities/problem-tag.entity";
 import {Tag} from "@modules/problem-tag/entities/tag.entity";
 import {Testcase} from "@modules/testcase/entities/testcase.entity";
 import {RedisModule} from "@modules/cache/redis.module";
+import {QueueModule} from "@modules/queue/queue.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Problem, ProblemTag, Tag, Testcase]),
         forwardRef(() => SubmissionModule),
         ProblemTagModule,
-        RedisModule
+        RedisModule,
+        QueueModule
     ],
     controllers: [ProblemController],
     providers: [
