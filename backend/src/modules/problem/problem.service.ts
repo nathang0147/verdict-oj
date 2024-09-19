@@ -18,8 +18,6 @@ export class ProblemService extends BaseServiceAbstract<Problem>{
         @Inject('ProblemRepositoryInterface')
         private readonly problemRepository: ProblemRepositoryInterface,
 
-        @Inject(CACHE_MANAGER) private cacheService: Cache,
-
         @Inject()
         private readonly redisService: RedisService,
 

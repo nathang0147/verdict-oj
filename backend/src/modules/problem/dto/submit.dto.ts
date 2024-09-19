@@ -8,7 +8,7 @@ export class SubmitDto {
     @IsNotEmpty()
     problemId: number;
     @IsNotEmpty()
-    language: SubmissionLanguage;
+    language: number;
     @IsNotEmpty()
     code: string;
 }

@@ -9,7 +9,7 @@ import {EnvironmentVariables, RedisConfig} from "@configs/env/configuration.conf
   imports: [
     ClientsModule.registerAsync([
       {
-        name: 'REDIS_SERVICE',
+        name: 'REDIS_QUEUE_CLIENT',
         useFactory: async (configService: ConfigService<EnvironmentVariables>) => {
           const queueConfig = configService.get<RedisConfig>('redis');
           return {
@@ -19,6 +19,12 @@ import {EnvironmentVariables, RedisConfig} from "@configs/env/configuration.conf
               socket:{
                 host: queueConfig.host,
                 port: queueConfig.port||6379,
+                reconnectStrategy: (retries: number) => {
+                  if (retries > 10) {
+                    return new Error('Retry limit reached');
+                  }
+                  return Math.min(retries * 50, 2000); // Retry delay
+                },
               },
               database: 0
             }
@@ -30,5 +36,6 @@ import {EnvironmentVariables, RedisConfig} from "@configs/env/configuration.conf
   ],
   controllers: [QueueController],
   providers: [QueueService],
+  exports: [QueueService]
 })
 export class QueueModule {}

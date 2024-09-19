@@ -25,8 +25,5 @@ export class CreateProblemDto{
     readonly memoryLimit: number;
 
     @IsNotEmpty()
-    readonly tags: string;
-
-    @IsNotEmpty()
     readonly hint: string;
 }
