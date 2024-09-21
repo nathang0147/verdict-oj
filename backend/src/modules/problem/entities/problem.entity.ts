@@ -1,10 +1,19 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {BaseEntity} from "@modules/share/base/base.entity";
+import {Exclude} from "class-transformer";
+import {Submission} from "@modules/submission/entities/submission.entity";
+import {ProblemTag} from "@modules/problem-tag/entities/problem-tag.entity";
+import {BaseNumIdEntity} from "@modules/share/base/baseNumId.entity";
+import {Testcase} from "@modules/testcase/entities/testcase.entity";
+
+export enum PROBLEM_STATUS {
+    UNSOLVED=0,
+    TRIED=1,
+    SOLVED=2,
+}
 
 @Entity('t_problem')
-export class Problem{
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class Problem extends BaseNumIdEntity{
     @Column()
     title: string;
 
@@ -12,23 +21,31 @@ export class Problem{
     description: string;
 
     @Column()
-    input: string;
+    sampleInput: string;
 
     @Column()
-    output: string;
+    sampleOutput: string;
 
     @Column()
-    level: number;
+    difficulty: number;
 
     @Column()
+    @Exclude()
     runtimeLimit: number;
 
     @Column()
+    @Exclude()
     memoryLimit: number;
 
-    @CreateDateColumn()
-    createdAt: Date;
+    @Column()
+    hint: string;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+    @OneToMany(()=> ProblemTag, problemTag => problemTag.problemId)
+    problemTags: ProblemTag[];
+
+    @OneToMany(() => Submission, submission => submission.problemId)
+    submissions: Submission[];
+
+    @OneToMany(() => Testcase, testcase => testcase.problemId)
+    testcases: Testcase[];
 }
