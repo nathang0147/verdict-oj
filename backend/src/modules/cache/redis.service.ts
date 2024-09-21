@@ -17,6 +17,12 @@ export class RedisService implements OnModuleInit,OnModuleDestroy{
             socket:{
                 host: this.configService.get<string>('AZURE_CACHE_FOR_REDIS_HOST_NAME'),
                 port: this.configService.get<number>('REDIS_PORT'),
+                reconnectStrategy: (retries: number) => {
+                    if (retries > 10) {
+                        return new Error('Retry limit reached');
+                    }
+                    return Math.min(retries * 50, 2000); // Retry delay
+                },
             }
         })
 

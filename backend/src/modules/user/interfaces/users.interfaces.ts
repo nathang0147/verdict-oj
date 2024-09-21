@@ -18,4 +18,6 @@ export interface UsersRepositoryInterfaces extends BaseRepositoryInterface<User>
     getSubmissionCount(userId: string): Promise<number>
 
     getAcceptedSubmissionCount(userId: string): Promise<number>
+
+    getTotalUsersCount(): Promise<number>
 }

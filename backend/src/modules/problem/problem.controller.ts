@@ -10,7 +10,7 @@ import {CreateProblemDto} from "@modules/problem/dto/create.problem.dto";
 import {UpdateProblemDto} from "@modules/problem/dto/update.problem.dto";
 import {SubmitDto} from "@modules/problem/dto/submit.dto";
 
-@Controller('problem/')
+@Controller('problem')
 @UseInterceptors(ClassSerializerInterceptor)
 export class ProblemController {
     constructor(
@@ -20,6 +20,24 @@ export class ProblemController {
     }
 
     @Get()
+    index(@Body() id: string, title: string){
+        return this.problemService.searchProblems(id, title);
+    }
+
+    @Get('search')
+    getProblems(@Query('id') problemId: number){
+        try {
+            const problem = this.problemService.findOne(problemId);
+            const tags = this.tagService.getTagsWithProblemId(problemId);
+            if(!problem) {}
+
+            return {problem, tags};
+        }catch (e){
+            throw e;
+        }
+    }
+
+    @Get('status')
     getProblemsWithStatus(@Req() req: any, @Query('offset') offset: number, @Query('limit') limit: number) {
         const userId = req.user.id;
         return this.problemService.getProblemsWithStatus(userId, {offset, limit});
@@ -53,30 +71,11 @@ export class ProblemController {
         }
     }
 
-
-    //Chua tao submitDto
     @Post('submit')
-
     submit(@Req() req: any, @Body() submitDto: SubmitDto) {
         submitDto.userId = req.user.id;
         return this.problemService.submit(submitDto);
     }
 
-    @Roles(Role.ADMIN)
-    @Post('create')
-    createProblem(@Body() createProblemDto: CreateProblemDto) {
-        return this.problemService.create(createProblemDto)
-    }
 
-    @Roles(Role.ADMIN)
-    @Post('update')
-    updateProblem(@Body() updateProblemDto : UpdateProblemDto, @Query('id') id: number) {
-        return this.problemService.update(id, updateProblemDto)
-    }
-
-    @Roles(Role.ADMIN)
-    @Post('delete')
-    deleteProblem(@Query('id') id: number) {
-        return this.problemService.remove(id)
-    }
 }

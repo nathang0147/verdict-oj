@@ -127,4 +127,10 @@ export class UsersRepository
             .andWhere('s.status = :status', {status: SubmissionStatus.STATUS_ACCEPTED})
             .getCount()
     }
+
+    async getTotalUsersCount(): Promise<number> {
+        return await this.usersRepository.createQueryBuilder()
+            .where('deletedAt IS NULL')
+            .getCount()
+    }
 }

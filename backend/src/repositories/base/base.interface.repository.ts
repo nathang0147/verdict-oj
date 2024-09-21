@@ -41,7 +41,7 @@ export interface BaseRepositoryInterface<T> {
      * @param dto The data transfer object (DTO) containing the updated fields.
      * @returns A promise that resolves with the updated entity.
      */
-    update(id: string | number, dto: DeepPartial<T>): Promise<T>;
+    update(id: string | number, dto: Partial<T>): Promise<T>;
 
     /**
      * Soft deletes an entity based on its ID.

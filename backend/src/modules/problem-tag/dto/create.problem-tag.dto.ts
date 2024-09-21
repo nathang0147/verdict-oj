@@ -1,4 +1,4 @@
 export class CreateProblemTagDto {
-    problemId: string;
-    tagId: string;
+    problemId: number;
+    tagId: number;
 }

@@ -13,8 +13,4 @@ export class Testcase extends BaseNumIdEntity{
 
     @Column()
     output: string;
-
-    @Column({type: 'timestamp'})
-    expiredAt: Date;
-
 }

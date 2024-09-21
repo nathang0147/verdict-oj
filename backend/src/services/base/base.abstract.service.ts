@@ -31,7 +31,7 @@ export abstract class BaseServiceAbstract<T extends BaseEntity>
         return await this.repository.findOneByCondition(condition, filter);
     }
 
-    async update(id: string | number, item: DeepPartial<T>): Promise<T> {
+    async update(id: string | number, item: Partial<T>): Promise<T> {
         const parsedId = isNumber(id)? Number(id): id;
         return this.repository.update(parsedId, item);
     }

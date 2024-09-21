@@ -26,7 +26,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
         const parsedId = isNumber(id)? Number(id): id;
 
         const findOptions: FindOneOptions<T> = {
-            where: { parsedId } as any,
+            where: { id: parsedId } as any,
             select: projection,
             ...options
         };
@@ -51,21 +51,23 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
         return { count, items };
     }
 
-    async update(id: string | number, dto: DeepPartial<T>): Promise<T | null> {
+    async update(id: string | number, dto: Partial<T>): Promise<T | null> {
         const parsedId = isNumber(id)? Number(id): id;
-        await this.model.update(parsedId, dto as any);
+        await this.model.update({id: parsedId} as any, dto as any);
         return await this.model.findOne({
-            where: {parsedId, deletedAt: null} as any,
+            where: {id: parsedId, deletedAt: null} as any,
         })
     }
 
     async softDelete(id: string | number): Promise<boolean> {
         const parsedId = isNumber(id)? Number(id): id;
 
-        const item = await this.model.findOne(parsedId as any);
+        const item = await this.model.findOne({
+            where: {id: parsedId} as any,
+        });
         if(!item) return false;
 
-        const result = await this.model.update(parsedId, {deletedAt: new Date()} as any);
+        const result = await this.model.update({id: parsedId} as any, {deletedAt: new Date()} as any);
 
         return result.affected ===1;
     }
@@ -73,7 +75,7 @@ export abstract class BaseRepositoryAbstract<T extends BaseEntity>
     async permanentDelete(id: string | number): Promise<boolean> {
         const parsedId = isNumber(id)? Number(id): id;
 
-        const result = await this.model.delete(parsedId as any);
+        const result = await this.model.delete({id: parsedId} as any);
         return result.affected ===1;
     }
 }

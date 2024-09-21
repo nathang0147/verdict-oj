@@ -16,7 +16,7 @@ export class TagService extends BaseServiceAbstract<Tag>{
         return await this.tagRepository.searchTags(id, name);
     }
 
-    async getTagById(id: string) {
+    async getTagById(id: number) {
         return await this.tagRepository.findOneByCondition({id});
     }
 

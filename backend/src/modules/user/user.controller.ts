@@ -18,11 +18,17 @@ import {Roles, ROLES_KEY} from "../../decorators/roles.decorator";
 import Role from "@modules/authorization/contrants/role.enum";
 import {RoleGuard} from "@modules/authorization/guard/role.guard";
 import {UpdateUserDto} from "@modules/user/dto/update.user.dto";
+import {ProblemService} from "@modules/problem/problem.service";
+import {SubmissionService} from "@modules/submission/submission.service";
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user/')
 export class UserController {
-    constructor(private readonly userService: UserService) {
+    constructor(
+        private readonly userService: UserService,
+        private readonly problemService: ProblemService,
+        private readonly submissionService: SubmissionService
+    ) {
     }
 
     @Post()
@@ -68,5 +74,13 @@ export class UserController {
       return this.userService.getProblemSolvedStatus(req.user.id);
     }
 
-    
+    @Roles(Role.ADMIN)
+    @Get('admin')
+    index(){
+        return {
+            problem_count: this.problemService.getTotalProblemsCount(),
+            users_count: this.userService.getTotalUsersCount(),
+            submissions_count: this.submissionService.getTotalSubmissionsCount()
+        }
+    }
 }

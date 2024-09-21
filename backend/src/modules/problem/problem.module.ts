@@ -14,6 +14,7 @@ import {Tag} from "@modules/problem-tag/entities/tag.entity";
 import {Testcase} from "@modules/testcase/entities/testcase.entity";
 import {RedisModule} from "@modules/cache/redis.module";
 import {QueueModule} from "@modules/queue/queue.module";
+import {AdminProblemController} from "@modules/problem/admin.problem.controller";
 
 @Module({
     imports: [
@@ -23,14 +24,21 @@ import {QueueModule} from "@modules/queue/queue.module";
         RedisModule,
         QueueModule
     ],
-    controllers: [ProblemController],
+    controllers: [ProblemController, AdminProblemController],
     providers: [
         ProblemService,
         {
             provide: 'ProblemRepositoryInterface',
             useClass: ProblemRepository
         }],
-    exports: [ProblemService, TypeOrmModule.forFeature([Problem])],
+    exports: [
+        ProblemService,
+        TypeOrmModule.forFeature([Problem]),
+        {
+            provide: 'ProblemRepositoryInterface',
+            useClass: ProblemRepository
+        }
+    ],
 })
 export class ProblemModule {
 }

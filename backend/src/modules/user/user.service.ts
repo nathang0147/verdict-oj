@@ -78,4 +78,8 @@ export class UserService extends BaseServiceAbstract<User>{
         return this.usersRepository.getProblemSolvedStatus(userId);
     }
 
+    async getTotalUsersCount(): Promise<number> {
+        return this.usersRepository.getTotalUsersCount();
+    }
+
 }

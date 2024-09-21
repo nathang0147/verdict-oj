@@ -18,7 +18,7 @@ export class ProblemTagService {
         return await this.problemTagRepository.findOneByCondition({tagId});
     }
 
-    async deleteProblemTag(tagId: number): Promise<boolean> {
-        return this.problemTagRepository.permanentDelete(tagId);
+    async deleteProblemTag(problemTagId: number): Promise<boolean> {
+        return this.problemTagRepository.permanentDelete(problemTagId);
     }
 }

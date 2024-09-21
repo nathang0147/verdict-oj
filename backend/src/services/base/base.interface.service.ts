@@ -4,7 +4,7 @@ import {FindDto} from "../../api/utils/find.dto";
 
 export interface Write<T> {
     create(item: T | DeepPartial<T>): Promise<T>;
-    update(id: string | number, item: DeepPartial<T>): Promise<T>;
+    update(id: string | number, item: Partial<T>): Promise<T>;
     remove(id: string | number): Promise<boolean>;
 }
 
