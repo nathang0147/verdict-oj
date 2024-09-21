@@ -9,7 +9,7 @@ import {UserModule} from "@modules/user/user.module";
 
 @Module({
     imports: [
-        UserModule,
+        forwardRef(() => UserModule),
         forwardRef(() => ProblemModule),
         TypeOrmModule.forFeature([Submission])],
     controllers: [SubmissionController],

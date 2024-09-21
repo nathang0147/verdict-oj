@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {UserService} from './user.service';
 import {UserController} from './user.controller';
 import {TypeOrmModule} from "@nestjs/typeorm";
@@ -16,7 +16,7 @@ import {SubmissionModule} from "@modules/submission/submission.module";
         TypeOrmModule.forFeature([User, Submission]),
         RedisModule,
         ProblemModule,
-        SubmissionModule
+        forwardRef(() => SubmissionModule)
     ],
     controllers: [UserController],
     providers: [UserService, {provide: 'UsersRepositoryInterface', useClass: UsersRepository}],
