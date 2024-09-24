@@ -2,9 +2,9 @@ import {BaseEntity} from "@modules/share/base/base.entity";
 import {BaseServiceInterface} from "./base.interface.service";
 import {BaseRepositoryInterface} from "@repositories/base/base.interface.repository";
 import {DeepPartial, FindManyOptions, FindOneOptions, FindOptionsWhere} from "typeorm";
-import {FindAllResponse} from "../../types/common.type";
+import {FindAllResponse} from "../../common/common.type";
 import {FindDto} from "../../api/utils/find.dto";
-import {isNumber} from "../../utils/type-guards";
+import {isNumber} from "../../common/common.function";
 
 export abstract class BaseServiceAbstract<T extends BaseEntity>
     implements BaseServiceInterface<T>

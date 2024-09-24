@@ -1,4 +1,4 @@
-import { FindAllResponse } from 'src/types/common.type';
+import { FindAllResponse } from '../../common/common.type';
 import {DeepPartial, FindManyOptions, FindOneOptions, FindOptionsWhere} from "typeorm";
 import {FindDto} from "../../api/utils/find.dto";
 
