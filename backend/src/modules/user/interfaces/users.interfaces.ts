@@ -1,8 +1,9 @@
 import {BaseRepositoryInterface} from "@repositories/base/base.interface.repository";
 import {User} from "../entities/user.entity";
-import {FindAllAndCount, FindAllResponse} from "../../../types/common.type";
+import {FindAllAndCount, FindAllResponse} from "../../../common/common.type";
 import {FindDto} from "../../../api/utils/find.dto";
 import {FindOptionsWhere} from "typeorm";
+import {SearchUserDto} from "@modules/user/dto/search.user.dto";
 
 export interface UsersRepositoryInterfaces extends BaseRepositoryInterface<User>{
     findAllWithSubFields(condition: FindOptionsWhere<User>,findDto: FindDto<User>): Promise<FindAllResponse<User>>;
@@ -20,4 +21,6 @@ export interface UsersRepositoryInterfaces extends BaseRepositoryInterface<User>
     getAcceptedSubmissionCount(userId: string): Promise<number>
 
     getTotalUsersCount(): Promise<number>
+
+    searchUser(searchDto: SearchUserDto): Promise<User[]>;
 }
