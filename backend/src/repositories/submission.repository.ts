@@ -4,7 +4,7 @@ import {SubmissionRepositoryInterface} from "@modules/submission/interfaces/subm
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Injectable} from "@nestjs/common";
-import {FindAllResponse} from "../types/common.type";
+import {FindAllResponse} from "../common/common.type";
 import {Problem} from "@modules/problem/entities/problem.entity";
 import {User} from "@modules/user/entities/user.entity";
 import {SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";
