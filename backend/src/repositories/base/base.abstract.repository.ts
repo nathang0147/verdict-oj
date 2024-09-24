@@ -1,9 +1,9 @@
 import {DeepPartial, FindManyOptions, FindOneOptions, FindOptionsWhere, Repository} from "typeorm";
 import {BaseRepositoryInterface} from "@repositories/base/base.interface.repository";
 import {BaseEntity} from "@modules/share/base/base.entity";
-import {FindAllResponse} from "../../types/common.type";
+import {FindAllResponse} from "../../common/common.type";
 import {FindDto} from "../../api/utils/find.dto";
-import {isNumber} from "../../utils/type-guards";
+import {isNumber} from "../../common/common.function";
 
 
 export abstract class BaseRepositoryAbstract<T extends BaseEntity>

@@ -5,7 +5,7 @@ import {
     Get,
     HttpException,
     HttpStatus,
-    NotFoundException,
+    NotFoundException, Param,
     Patch,
     Post,
     Query
@@ -19,7 +19,7 @@ import {CreateProblemTagDto} from "@modules/problem-tag/dto/create.problem-tag.d
 
 @Roles(Role.ADMIN)
 @Controller('tag')
-export class TagController {
+export class AdminTagController {
     constructor(
         private readonly tagService: TagService,
         private readonly problemTagService: ProblemTagService
@@ -29,6 +29,11 @@ export class TagController {
     @Get()
     getAllTags() {
         return this.tagService.getTags();
+    }
+
+    @Get()
+    index(@Body() {id, name}: { id: null,  name: null}) {
+        return this.tagService.searchTags(id, name);
     }
 
     @Post('create')
@@ -44,28 +49,15 @@ export class TagController {
         }
     }
 
-    @Post('add')
-    addTagToProblem(@Body() createProblemTagDto: CreateProblemTagDto) {
-        try{
-            return this.problemTagService.addProblemTag(createProblemTagDto);
-        }catch (e){
-            throw new HttpException({
-                status: HttpStatus.BAD_REQUEST,
-                error: 'Error adding tag to problem',
-                message: e.message,
-            }, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @Patch('edit')
-    editTag(@Query('id') tagId: number){
+    @Patch('edit/:id')
+    editTag(@Param('id') tagId: number){
         return this.tagService.getTagById(tagId)
     }
 
-    @Patch('update')
-    updateTag(@Body() updateTagDto: UpdateTagDto) {
+    @Patch('update/:id')
+    updateTag(@Body() updateTagDto: UpdateTagDto, @Param('id') id: number) {
         try{
-            const tagExists = this.tagService.getTagById(updateTagDto.id);
+            const tagExists = this.tagService.getTagById(id);
             if(!tagExists){
                 throw new NotFoundException('Tag not found');
             }
@@ -79,27 +71,14 @@ export class TagController {
         }
     }
 
-    @Delete()
-    deleteTag(@Body() id: number) {
+    @Delete('delete/:id')
+    deleteTag(@Param() id: number) {
         try{
             return this.tagService.delete(id);
         }catch (e){
             throw new HttpException({
                 status: HttpStatus.BAD_REQUEST,
                 error: 'Error deleting tag',
-                message: e.message,
-            }, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @Delete('remove_tag')
-    removeTagFromProblem(@Body() problemTagId : number){
-        try {
-            return this.problemTagService.deleteProblemTag(problemTagId);
-        }catch (e){
-            throw new HttpException({
-                status: HttpStatus.BAD_REQUEST,
-                error: 'Error removing tag from problem',
                 message: e.message,
             }, HttpStatus.BAD_REQUEST);
         }

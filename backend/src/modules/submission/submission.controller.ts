@@ -16,22 +16,22 @@ export class SubmissionController {
   }
 
   @Get('/problem')
-  getSubmissionListByProblemId(@Body() problemId: number, @Param('page') page: number|1) {
+  getSubmissionListByProblemId(@Query('id') problemId: number, @Body('page') page: number|1) {
     return this.submissionService.getSubmissionListByProblemId(problemId, page);
   }
 
   @Get()
-  getSubmissionAndProblem(@Query('id') id: number) {
+  getSubmissionAndProblem(@Body('submissionId') submissionId: number) {
     try{
-        return this.submissionService.getSubmissionAndProblem(id);
+        return this.submissionService.getSubmissionAndProblem(submissionId);
     }catch (e){
-        return e.message;
+        return e;
     }
   }
 
   @Get('/total')
   getTotalSubmissionsAndPaginate(
-      @Body() page: number,
+      @Body('page') page: number | 1,
   ) {
     return this.submissionService.getSubmissionPagination(page, this.configService.get('PAGINATION_PER_PAGE'));
   }

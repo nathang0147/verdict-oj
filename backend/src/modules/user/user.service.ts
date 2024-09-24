@@ -4,12 +4,13 @@ import {User} from "./entities/user.entity";
 import {UsersRepositoryInterfaces} from "@modules/user/interfaces/users.interfaces";
 import {CreateUserDto} from "@modules/user/dto/create.user.dto";
 import {FindManyOptions, FindOptionsWhere} from "typeorm";
-import {FindAllResponse} from "../../types/common.type";
+import {FindAllResponse} from "../../common/common.type";
 import {FindDto} from "../../api/utils/find.dto";
 import {UpdateUserDto} from "@modules/user/dto/update.user.dto";
 import {UserRolesService} from "@modules/user-roles/user-roles.service";
 import {USER_ROLES} from "@modules/user-roles/entities/user-roles.entities";
 import {RedisService} from "@modules/cache/redis.service";
+import {SearchUserDto} from "@modules/user/dto/search.user.dto";
 
 @Injectable()
 export class UserService extends BaseServiceAbstract<User>{
@@ -80,6 +81,10 @@ export class UserService extends BaseServiceAbstract<User>{
 
     async getTotalUsersCount(): Promise<number> {
         return this.usersRepository.getTotalUsersCount();
+    }
+
+    async searchUser(searchDto: SearchUserDto){
+        return await this.usersRepository.searchUser(searchDto);
     }
 
 }

@@ -1,6 +1,6 @@
 import {Submission} from "@modules/submission/entities/submission.entity";
 import {BaseRepositoryInterface} from "@repositories/base/base.interface.repository";
-import {FindAllResponse} from "../../../types/common.type";
+import {FindAllResponse} from "../../../common/common.type";
 import {Problem} from "@modules/problem/entities/problem.entity";
 import {User} from "@modules/user/entities/user.entity";
 import {SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";
@@ -25,4 +25,6 @@ export interface SubmissionRepositoryInterface extends BaseRepositoryInterface<S
     getUser(submissionId: number): Promise<User>;
 
     getSubmissionWithStatus(submissionId: number, status: SubmissionStatus): Promise<Submission>;
+
+    getCount(options: any): Promise<number>;
 }

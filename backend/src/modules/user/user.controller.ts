@@ -52,12 +52,6 @@ export class UserController {
         return this.userService.findOne(id)
     }
 
-    @Delete(':id')
-    @Roles(Role.ADMIN)
-    remove(@Param('id') id: string) {
-        return this.userService.remove(id);
-    }
-
     @Get('ranking')
     getUserRanking(@Body() offset: number, @Body() limit: number) {
         return this.userService.getUserRanking(offset, limit);

@@ -9,6 +9,7 @@ import {Submission} from "@modules/submission/entities/submission.entity";
 import {RedisModule} from "@modules/cache/redis.module";
 import {ProblemModule} from "@modules/problem/problem.module";
 import {SubmissionModule} from "@modules/submission/submission.module";
+import {AdminUserController} from "@modules/user/admin.user.controller";
 
 @Module({
     imports: [
@@ -18,7 +19,7 @@ import {SubmissionModule} from "@modules/submission/submission.module";
         ProblemModule,
         forwardRef(() => SubmissionModule)
     ],
-    controllers: [UserController],
+    controllers: [UserController, AdminUserController ],
     providers: [UserService, {provide: 'UsersRepositoryInterface', useClass: UsersRepository}],
     exports: [UserService, TypeOrmModule.forFeature([User])],
 })

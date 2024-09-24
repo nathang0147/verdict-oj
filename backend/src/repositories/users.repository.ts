@@ -5,11 +5,12 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {FindOptionsWhere, Repository} from "typeorm";
 import {User} from "@modules/user/entities/user.entity";
 import {Injectable} from "@nestjs/common";
-import {FindAllAndCount, FindAllResponse} from "../types/common.type";
+import {FindAllAndCount, FindAllResponse} from "../common/common.type";
 import {FindDto} from "../api/utils/find.dto";
 import {UserRoles} from "@modules/user-roles/entities/user-roles.entities";
 import {Submission} from "@modules/submission/entities/submission.entity";
 import {SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";
+import {SearchUserDto} from "@modules/user/dto/search.user.dto";
 
 @Injectable()
 export class UsersRepository
@@ -132,5 +133,15 @@ export class UsersRepository
         return await this.usersRepository.createQueryBuilder()
             .where('deletedAt IS NULL')
             .getCount()
+    }
+
+    async searchUser(searchDto: SearchUserDto){
+        return await this.usersRepository.createQueryBuilder()
+            .where('id = :id', {id: searchDto.id})
+            .andWhere('username LIKE :username', {username: `%${searchDto.username}%`})
+            .andWhere('email LIKE :email', {email: `%${searchDto.email}%`})
+            .andWhere('deletedAt IS NULL')
+            .orderBy('createdAt', 'DESC')
+            .getMany()
     }
 }

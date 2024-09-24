@@ -3,6 +3,7 @@ import {TestcaseRepositoryInterface} from "@modules/testcase/interfaces/testcase
 import {BaseServiceAbstract} from "../../services/base/base.abstract.service";
 import {Testcase} from "@modules/testcase/entities/testcase.entity";
 import {ProblemRepositoryInterface} from "@modules/problem/interface/problem.interface";
+import {CreateTestcaseDto} from "@modules/testcase/dto/create.testcase.dto";
 
 @Injectable()
 export class TestcaseService extends BaseServiceAbstract<Testcase>{
@@ -31,4 +32,11 @@ export class TestcaseService extends BaseServiceAbstract<Testcase>{
         }
         return await this.testcaseRepository.create(createTestcaseDto);
     }
+
+    async addTestcase(createTestcaseDto: CreateTestcaseDto): Promise<number>{
+        const newTestcase = await this.testcaseRepository.create(createTestcaseDto);
+        return newTestcase.id;
+    }
+
+
 }
