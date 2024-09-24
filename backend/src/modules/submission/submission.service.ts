@@ -2,7 +2,8 @@ import {Inject, Injectable} from '@nestjs/common';
 import {BaseServiceAbstract} from "../../services/base/base.abstract.service";
 import {Submission} from "@modules/submission/entities/submission.entity";
 import {SubmissionRepositoryInterface} from "@modules/submission/interfaces/submission.interface";
-import {FindAllResponse} from "../../types/common.type";
+import {FindAllResponse} from "../../common/common.type";
+import {calculatePagination} from "../../common/common.function";
 
 @Injectable()
 export class SubmissionService extends BaseServiceAbstract<Submission> {
@@ -72,18 +73,13 @@ export class SubmissionService extends BaseServiceAbstract<Submission> {
         };
     }
 
+    async getCount(options: any): Promise<number> {
+        return await this.submissionRepository.getCount({
+            where: options
+        })
+    }
 
-}
+    
 
-function calculatePagination(totalItems: number, currentPage: number = 1, pageSize: number = 10) {
-    const totalPages = Math.ceil(totalItems / pageSize);
-    const offset = (currentPage - 1) * pageSize;
 
-    return {
-        totalItems,
-        currentPage,
-        pageSize,
-        totalPages,
-        offset,
-    };
 }
