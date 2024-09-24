@@ -5,7 +5,7 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {FindOptionsRelations, FindOptionsWhere, Repository} from "typeorm";
 import {Injectable} from "@nestjs/common";
 import {FindDto} from "../api/utils/find.dto";
-import {FindAllResponse} from "../types/common.type";
+import {FindAllResponse} from "../common/common.type";
 import {Submission} from "@modules/submission/entities/submission.entity";
 import {Testcase} from "@modules/testcase/entities/testcase.entity";
 import {SubmissionLanguage, SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";

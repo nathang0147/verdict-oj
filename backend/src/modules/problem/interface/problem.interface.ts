@@ -2,7 +2,7 @@ import {Problem} from "@modules/problem/entities/problem.entity";
 import {BaseRepositoryInterface} from "@repositories/base/base.interface.repository";
 import {FindOptionsRelations} from "typeorm";
 import {FindDto} from "../../../api/utils/find.dto";
-import {FindAllResponse} from "../../../types/common.type";
+import {FindAllResponse} from "../../../common/common.type";
 import {Submission} from "@modules/submission/entities/submission.entity";
 import {Testcase} from "@modules/testcase/entities/testcase.entity";
 import {SubmitDto} from "@modules/problem/dto/submit.dto";
