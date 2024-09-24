@@ -23,7 +23,8 @@ export class RedisService implements OnModuleInit,OnModuleDestroy{
                     }
                     return Math.min(retries * 50, 2000); // Retry delay
                 },
-            }
+            },
+            database:15
         })
 
         this.redisClient.on('error', (err) => console.error('Redis Client Error', err));

@@ -7,13 +7,13 @@ import {ProblemTagRepository} from "@repositories/problem-tag.repository";
 import {TagService} from "@modules/problem-tag/tag.service";
 import {TagRepository} from "@repositories/tag.repository";
 import {Problem} from "@modules/problem/entities/problem.entity";
-import {TagController} from "@modules/problem-tag/tag.controller";
+import {AdminTagController} from "@modules/problem-tag/admin.tag.controller";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([ProblemTag, Tag, Problem])
     ],
-    controllers: [TagController],
+    controllers: [AdminTagController],
     providers: [
         ProblemTagService,
         TagService,
