@@ -1,6 +1,8 @@
 {
+  "extends": "./dispatch/tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -17,18 +19,22 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "moduleResolution": "Node"
+    "paths": {
+      "@modules/*": [
+        "src/modules/*"
+      ],
+      "@configs/*": [
+        "src/configs/*"
+      ],
+      "@repositories/*": [
+        "src/repositories/*"
+      ]
+    }
   },
-
-  "paths": {
-    "@modules/*": [
-      "src/modules/*"
-    ],
-    "@configs/*": [
-      "src/configs/*"
-    ],
-    "@repositories/*": [
-      "src/repositories/*"
-    ]
+  "include": [
+    "./src/**/*"
+  ],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
   }
 }
