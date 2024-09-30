@@ -70,8 +70,6 @@ export class ProblemRepository
         const savedAnswer = await this.submissionRepository.save(submitAnswer);
 
         return savedAnswer.id;
-
-
     }
 
     async getTotalProblemsCount(): Promise<number> {
