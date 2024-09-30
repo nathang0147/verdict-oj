@@ -27,7 +27,7 @@
         "src/configs/*"
       ],
       "@repositories/*": [
-        "src/repositories/*"
+        "src/repository/*"
       ]
     }
   },

@@ -6,4 +6,9 @@ export abstract class BaseNumIdEntity extends BaseEntity {
     @PrimaryGeneratedColumn('increment')
     @Expose()
     id?: number;
+
+    @LogMethod
+    getId(): number {
+        return this.id;
+    }
 }
