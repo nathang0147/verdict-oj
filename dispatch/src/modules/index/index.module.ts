@@ -27,6 +27,10 @@ import {ProblemRepository, SubmissionRepository, TestcaseRepository} from "@repo
       ProblemService,
       SubmissionService,
       TestcaseService,
-      TypeOrmModule.forFeature([Problem, Testcase, Submission])]
+      SubmissionRepository,
+      ProblemRepository,
+      TestcaseRepository,
+      TypeOrmModule.forFeature([Problem, Testcase, Submission])
+  ]
 })
 export class IndexModule {}
