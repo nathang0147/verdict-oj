@@ -27,6 +27,9 @@ export class Problem extends BaseNumIdEntity{
     sampleOutput: string;
 
     @Column()
+    methodName: string;
+
+    @Column()
     difficulty: number;
 
     @Column()
