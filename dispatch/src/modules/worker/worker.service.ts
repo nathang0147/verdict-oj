@@ -39,10 +39,13 @@ export class JSWorkerService implements WorkerInterface {
         this.logger.log('Compile step is a no-op for JavaScript.');
     }
 
-    async run(cwd: string, submission: Submission, testcases: Testcase[], problem: Problem): Promise<Submission> {
+    async run(cwd: string, submission: Submission, testcases: Testcase[], problem: Problem): Promise<void> {
         let totalCost = 0;
+        const maxConcurrency = 5; // Adjust based on resource constraints
+        const queue = testcases.slice(); // Testcase queue to handle concurrency
+        const memoryStart = process.memoryUsage().heapUsed;
 
-        for (const testcase of testcases) {
+        const processTestCase = async (testcase: Testcase) => {
             const input = JSON.parse(testcase.input); // Parse input as JS object
             const expectedOutput = JSON.parse(testcase.output); // Parse expected output
 
@@ -60,9 +63,19 @@ export class JSWorkerService implements WorkerInterface {
 
             // 3. Compile the user's code (it should define a function, like 'solve')
             const code = fs.readFileSync(filePath, 'utf-8');
-            const script = await isolate.compileScript(code);
+
+            let script;
+            try {
+                script = await isolate.compileScript(code);
+            }catch (error){
+                submission.status = SubmissionStatus.STATUS_COMPILATION_ERROR;
+                submission.error = error.message;
+                this.logger.warn('Compilation Error: ' + error.message);
+                return submission;
+            }
 
             try {
+
                 // 4. Run the compiled script in the isolate's context
                 await script.run(context);
 
@@ -83,11 +96,8 @@ export class JSWorkerService implements WorkerInterface {
                 const cost = Number(endTime - startTime) / 1000000; // Convert to milliseconds
                 totalCost += cost;
 
-                console.log('Result: ' + JSON.stringify(result));
-                console.log('Expected Output: ' + JSON.stringify(expectedOutput));
-
                 // 6. Check if the result matches the expected output
-                if (JSON.stringify(result) !== JSON.stringify(expectedOutput)) {
+                if (!this.compareResults(result, expectedOutput)) {
                     submission.input = JSON.stringify(input);
                     submission.output = JSON.stringify(result);
                     submission.expectedOutput = JSON.stringify(expectedOutput);
@@ -118,8 +128,13 @@ export class JSWorkerService implements WorkerInterface {
                     submission.error = 'Wrong Answer';
                     this.logger.warn('Wrong Answer: ' + error.message);
                     return submission;
+                } else if (error.message.includes('Interval')) {
+                    submission.status = SubmissionStatus.STATUS_INTERNAL_ERROR;
+                    submission.error = 'Interval error';
+                    this.logger.warn('Interval Error: ' + error.message);
+                    return submission;
                 }
-                throw new Error("Internal Error: " + error.message);
+                throw new RuntimeException("Abused execute: " + error.message);
             } finally {
                 // 8. Clean up
                 script.release();
@@ -128,9 +143,32 @@ export class JSWorkerService implements WorkerInterface {
             }
         }
 
+        // Execute testcases with concurrency control
+        const runTestCasesConcurrently = async () => {
+            const workers = [];
+            while (queue.length && workers.length < maxConcurrency) {
+                const testcase = queue.shift();
+                workers.push(processTestCase(testcase));
+            }
+            await Promise.all(workers);
+        };
+
+        await runTestCasesConcurrently();
+
+        const memoryEnd = process.memoryUsage().heapUsed;
+        submission.memory = (memoryEnd - memoryStart) / (1024 * 1024); // Memory used in MB
         submission.runtime = totalCost;
-        submission.memory = process.memoryUsage().heapUsed / (1024 * 1024); // Convert to MB
         submission.status = SubmissionStatus.STATUS_ACCEPTED;
-        return submission;
     }
+
+    // Improved comparison method
+    compareResults(result: any, expected: any): boolean {
+        if (Array.isArray(result) && Array.isArray(expected)) {
+            return result.length === expected.length && result.every((value, index) => this.compareResults(value, expected[index]));
+        } else if (typeof result === 'object' && typeof expected === 'object') {
+            return JSON.stringify(result) === JSON.stringify(expected);  // Deep compare
+        }
+        return result === expected;
+    }
+
 }
