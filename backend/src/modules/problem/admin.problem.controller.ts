@@ -112,16 +112,34 @@ export class AdminProblemController {
     }
 
     @Post('testcase/add')
-    addTestcaseToProblem(@Body() createTestcaseDto: CreateTestcaseDto) {
-        try{
-            return this.testcaseService.addTestcase(createTestcaseDto);
-        }catch (e){
-            throw new HttpException({
-                status: HttpStatus.BAD_REQUEST,
-                error: 'Error adding testcase to problem',
-                message: e.message,
-            }, HttpStatus.BAD_REQUEST);
+    async addTestcaseToProblem(@Body('testcase') createTestcaseDto: CreateTestcaseDto[], @Body('problemId') problemId: number) {
+        if(!problemId){
+            throw new PreconditionFailedException('Problem id is required');
         }
+
+        const problem = this.problemService.findOne(problemId);
+        if(!problem){
+            throw new NotFoundException(`Problem with id: ${problemId} not found`);
+        }
+
+        const result =[];
+
+        for(let testcase of createTestcaseDto){
+            try{
+                const newTestcase = await this.testcaseService.addTestcase(problemId, testcase);
+                 result.push(newTestcase);
+            }catch (e){
+                result.push( new HttpException({
+                    status: HttpStatus.BAD_REQUEST,
+                    error: 'Error adding testcase to problem',
+                    message: e.message,
+                }, HttpStatus.BAD_REQUEST)
+            )
+            }
+        }
+
+        return result;
+
     }
 
     @Get('testcase/edit/:id')
