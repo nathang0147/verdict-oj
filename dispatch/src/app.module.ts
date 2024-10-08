@@ -1,5 +1,4 @@
 import {Module} from '@nestjs/common';
-import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import * as process from 'node:process';
 import {TypeOrmModule} from '@nestjs/typeorm';
@@ -61,7 +60,7 @@ import {IndexModule} from "./modules/index/index.module";
         QueueModule,
         IndexModule
     ],
-    controllers: [AppController],
+    controllers: [],
     providers: [AppService],
 })
 export class AppModule {
