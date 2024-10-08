@@ -28,6 +28,7 @@ export const NodeEnv = {
 };
 
 export interface EnvironmentVariables {
+	paginationPerPage: number;
 	NODE_ENV: string;
 	jwtSecret: string;
 	jwtPrivateKey: string;
@@ -39,6 +40,7 @@ export interface EnvironmentVariables {
 
 export default ():  EnvironmentVariables => {
 	return {
+		paginationPerPage: parseInt(process.env.PAGINATION_PER_PAGE),
 		NODE_ENV: process.env.NODE_ENV || 'development',
 		jwtSecret: accessTokenPublicKey,
 		jwtPrivateKey: accessTokenPrivateKey,

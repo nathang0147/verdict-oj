@@ -1,24 +1,17 @@
 {
-  "moduleFileExtensions": [
-    "js",
-    "json",
-    "ts",
-    "node"
-  ],
-  "rootDir": "src",
+  "rootDir": "./",
+  "moduleFileExtensions": ["js", "json", "ts", "node"],
   "testRegex": ".*\\.spec\\.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
-  "collectCoverageFrom": [
-    "**/*.(t|j)s"
-  ],
+  "collectCoverageFrom": ["**/*.(t|j)s"],
   "coverageDirectory": "../coverage",
   "testEnvironment": "node",
   "moduleNameMapper": {
-    "^@modules/(.*)$": "<rootDir>/modules/$1",
-    "^@configs/(.*)$": "<rootDir>/configs/$1",
-    "^@repositories/(.*)$": "<rootDir>/repository/$1",
-    "^@decorators/(.*)$": "<rootDir>/decorators/$1"
+    "^@modules/(.*)$": "<rootDir>/src/modules/$1",
+    "^@configs/(.*)$": "<rootDir>/src/configs/$1",
+    "^@repositories/(.*)$": "<rootDir>/src/repositories/$1",
+    "^@decorators/(.*)$": "<rootDir>/src/decorators/$1"
   }
 }

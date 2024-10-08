@@ -89,8 +89,8 @@ export class ProblemController {
         @Req() req: any,
         @Body() submitDto: SubmitDto
     ) {
-        submitDto.userId = req.user.id;
-        return this.problemService.submit(submitDto);
+        const userId = req.user.id;
+        return this.problemService.submit(userId,submitDto);
     }
 
     @UsePipes(ProblemExistsFilterPipe)
