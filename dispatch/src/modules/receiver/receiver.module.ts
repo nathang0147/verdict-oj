@@ -5,11 +5,14 @@ import {QueueModule} from "@modules/queue/queue.module";
 import {ProblemRepository, SubmissionRepository, TestcaseRepository} from "@repositories/index.repository";
 import {Context} from "@modules/receiver/context.service";
 import {JSWorkerService} from "@modules/worker/worker.service";
+import {WorkerModule} from "@modules/worker/worker.module";
+import {IndexModule} from "@modules/index/index.module";
 
 @Module({
     imports: [
         QueueModule,
-        JSWorkerService
+        WorkerModule,
+        IndexModule
     ],
     controllers: [
         ReceiverController,
@@ -17,9 +20,6 @@ import {JSWorkerService} from "@modules/worker/worker.service";
     providers: [
         ReceiverService,
         Context,
-        ProblemRepository,
-        TestcaseRepository,
-        SubmissionRepository
     ],
 })
 export class ReceiverModule {

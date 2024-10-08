@@ -5,7 +5,7 @@ import * as fs from "fs";
 import {Problem} from "@modules/index/entities/problem.entity";
 import {Submission} from "@modules/index/entities/submission.entity";
 import {Testcase} from "@modules/index/entities/testcase.entity";
-import path from "node:path";
+import * as path from "node:path";
 import {Injectable, Logger} from "@nestjs/common";
 import {WorkerInterface} from "@modules/worker/interface/worker.interface";
 import {RuntimeException} from "@nestjs/core/errors/exceptions";
@@ -24,25 +24,27 @@ export class Context{
     ) {
         const judgerConfig = this.configService.get<JudgerConfig>('jugder');
         this.baseDir = judgerConfig.tempDir;
+        this.logger.log(`JSWorkerService initialized with fileName: ${this.baseDir}`);
     }
 
-    public process(){
+    public async process(){
+        console.log("problem: "+ this._problem)
         checkExistFolder(this.baseDir);
         const cwd = path.join(this.baseDir, `${this._submission.getId()}`);
         if(!fs.existsSync(cwd)){
             fs.mkdirSync(cwd, {recursive: true});
         }
 
-        this._worker.save(cwd, this._submission);
+        await this._worker.save(cwd, this._submission);
         try {
             this._worker.compile(cwd, this._submission);
-            this._worker.run(cwd, this._submission, this._testcases, this._problem);
+            await this._worker.run(cwd, this._submission, this._testcases, this._problem);
         }catch (e){
             throw new RuntimeException(e);
         }
         finally {
             try {
-                fs.rmdirSync(cwd);
+                fs.rmSync(cwd, {recursive: true});
             }catch (e){
                 if(e instanceof Error) {
                     this.logger.error(e.message);

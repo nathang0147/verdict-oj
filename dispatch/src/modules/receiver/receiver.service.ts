@@ -60,7 +60,8 @@ export class ReceiverService {
         }
 
         try{
-            this.context.process();
+            this.logger.log('Run Context')
+            await this.context.process();
         }catch (e){
             this.logger.error(e.message);
         }finally {
