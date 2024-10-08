@@ -64,8 +64,8 @@ export class ProblemRepository
         })
     }
 
-    async submit(submitDto : SubmitDto): Promise<number> {
-        const submitAnswer =  this.submissionRepository.create(submitDto);
+    async submit(userId: string, submitDto : SubmitDto): Promise<number> {
+        const submitAnswer =  this.submissionRepository.create({userId, ...submitDto});
 
         const savedAnswer = await this.submissionRepository.save(submitAnswer);
 

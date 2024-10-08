@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne} from "typeorm";
 import {SubmissionLanguage, SubmissionStatus} from "@modules/submission/entities/enum/submission.enum";
 import {Problem} from "@modules/problem/entities/problem.entity";
 import {User} from "@modules/user/entities/user.entity";
@@ -6,12 +6,12 @@ import {BaseNumIdEntity} from "@modules/share/base/baseNumId.entity";
 
 @Entity('t_submission')
 export class Submission extends BaseNumIdEntity {
-    @Column()
     @ManyToOne(type => User, user => user.id)
+    @JoinColumn({ name: 'userId' })
     userId: string; //relation with user
 
-    @Column()
     @ManyToOne(type => Problem, problem => problem.id)
+    @JoinColumn({ name: 'problemId' })
     problemId: number; //relation with problem
 
     @Column()
@@ -25,25 +25,32 @@ export class Submission extends BaseNumIdEntity {
 
     @Column({
         type: "enum",
-        enum: SubmissionStatus
+        enum: SubmissionStatus,
+        nullable: true
     })
     status: SubmissionStatus;
 
     @Column({nullable: true})
     error: string;
 
-    @Column({nullable: true})
-    runtime: number;
+    @Column({
+        type: "float",
+        nullable: true
+    })
+    runtime: number
 
-    @Column({nullable: true})
+    @Column({
+        type: "float",
+        nullable: true
+    })
     memory: number;
 
-    @Column()
+    @Column({nullable: true})
     input: string;
 
-    @Column()
+    @Column({nullable: true})
     output: string;
 
-    @Column()
+    @Column({nullable: true})
     expectedOutput: string;
 }

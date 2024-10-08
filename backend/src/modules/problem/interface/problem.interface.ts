@@ -24,7 +24,7 @@ export interface ProblemRepositoryInterface extends BaseRepositoryInterface<Prob
 
     searchTestcasesByProblemId(problemId: number, input?: string, output?: string): Promise<Testcase[]>
 
-    submit(submitDto : SubmitDto): Promise<number>
+    submit(userId:string ,submitDto : SubmitDto): Promise<number>
 
     getTotalProblemsCount(): Promise<number>
 

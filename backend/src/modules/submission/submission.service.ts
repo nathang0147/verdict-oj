@@ -74,9 +74,7 @@ export class SubmissionService extends BaseServiceAbstract<Submission> {
     }
 
     async getCount(options: any): Promise<number> {
-        return await this.submissionRepository.getCount({
-            where: options
-        })
+        return await this.submissionRepository.getCount(options);
     }
 
     

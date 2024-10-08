@@ -28,10 +28,16 @@ export class Submission extends BaseNumIdEntity {
     @Column({nullable: true})
     error: string;
 
-    @Column({nullable: true})
-    runtime: number;
+    @Column({
+        type: "float",
+        nullable: true
+    })
+    runtime: number
 
-    @Column({nullable: true})
+    @Column({
+        type: "float",
+        nullable: true
+    })
     memory: number;
 
     @Column()

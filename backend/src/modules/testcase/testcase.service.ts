@@ -4,6 +4,9 @@ import {BaseServiceAbstract} from "../../services/base/base.abstract.service";
 import {Testcase} from "@modules/testcase/entities/testcase.entity";
 import {ProblemRepositoryInterface} from "@modules/problem/interface/problem.interface";
 import {CreateTestcaseDto} from "@modules/testcase/dto/create.testcase.dto";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Problem} from "@modules/problem/entities/problem.entity";
+import {Repository} from "typeorm";
 
 @Injectable()
 export class TestcaseService extends BaseServiceAbstract<Testcase>{
@@ -11,8 +14,8 @@ export class TestcaseService extends BaseServiceAbstract<Testcase>{
         @Inject('TestcaseRepositoryInterface')
         private readonly testcaseRepository: TestcaseRepositoryInterface,
 
-        @Inject('ProblemRepositoryInterface')
-        private readonly problemRepository: ProblemRepositoryInterface
+        @InjectRepository(Problem)
+        private readonly problemRepository: Repository<Problem>,
     ) {
         super(testcaseRepository);
     }
@@ -25,16 +28,9 @@ export class TestcaseService extends BaseServiceAbstract<Testcase>{
         return await this.testcaseRepository.searchTestcasesByProblemId(problemId, input, output);
     }
 
-    async create(createTestcaseDto: any) {
-        const problem = await this.problemRepository.findOneById(createTestcaseDto.problemId);
-        if(!problem) {
-            throw new NotFoundException('Problem with id ' + createTestcaseDto.problemId + ' not found');
-        }
-        return await this.testcaseRepository.create(createTestcaseDto);
-    }
 
-    async addTestcase(createTestcaseDto: CreateTestcaseDto): Promise<number>{
-        const newTestcase = await this.testcaseRepository.create(createTestcaseDto);
+    async addTestcase(problemId: number,testcase: CreateTestcaseDto): Promise<number>{
+        const newTestcase = await this.testcaseRepository.create({problemId,...testcase});
         return newTestcase.id;
     }
 

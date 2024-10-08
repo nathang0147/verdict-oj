@@ -32,11 +32,15 @@ export class Problem extends BaseNumIdEntity{
     @Column()
     difficulty: number;
 
-    @Column()
+    @Column({
+        type: "float",
+    })
     @Exclude()
-    runtimeLimit: number;
+    runtimeLimit: number
 
-    @Column()
+    @Column({
+        type: "float",
+    })
     @Exclude()
     memoryLimit: number;
 

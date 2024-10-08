@@ -132,5 +132,7 @@ export class SubmissionRepository
             .getRawMany();
     }
 
-
+    async getCount(options: any): Promise<number> {
+        return this.submissionRepository.count({where: options});
+    }
 }

@@ -22,7 +22,8 @@ import {AdminProblemController} from "@modules/problem/admin.problem.controller"
         forwardRef(() => SubmissionModule),
         ProblemTagModule,
         RedisModule,
-        QueueModule
+        QueueModule,
+        TestcaseModule
     ],
     controllers: [ProblemController, AdminProblemController],
     providers: [

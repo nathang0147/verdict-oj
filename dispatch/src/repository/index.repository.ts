@@ -21,7 +21,7 @@ export class ProblemRepository extends BaseRepositoryAbstract<Problem> {
 
     async findBySubmissionId(submissionId: number): Promise<Problem> {
         return this.repository.createQueryBuilder('problem')
-            .leftJoinAndSelect('problem.submissions', 'submission')
+            .leftJoinAndSelect('t_submission', 'submission', 'submission.problemId = problem.id')
             .where('submission.id = :submissionId', { submissionId })
             .getOne();
     }
@@ -35,7 +35,7 @@ export class TestcaseRepository extends BaseRepositoryAbstract<Testcase> {
 
     async findAllByProblemId(problemId: number): Promise<Testcase[]> {
         return this.repository.createQueryBuilder('testcase')
-            .leftJoinAndSelect('testcase.problem', 'problem')
+            .leftJoinAndSelect('t_problem', 'problem', 'problem.id = testcase.problemId')
             .where('problem.id = :problemId', { problemId })
             .getMany();
     }
