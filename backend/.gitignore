@@ -1,4 +1,5 @@
-!.gitkeep
+/migrations/*
+!/migrations/.gitkeep
 
 # Logs
 logs
