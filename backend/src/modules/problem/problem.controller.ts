@@ -81,8 +81,8 @@ export class ProblemController {
     }
 
     @Throttle({
-        short: { limit: 1, ttl: 1000 },
-        long: { limit: 2, ttl: 60000 },
+        short: { limit: 5, ttl: 1000 },
+        long: { limit: 10, ttl: 60000 },
     })
     @Post('submit')
     submit(

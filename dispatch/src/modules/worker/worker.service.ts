@@ -49,103 +49,96 @@ export class JSWorkerService implements WorkerInterface {
         for (let testcase of testcases) {
             const input = this.parseInput(testcase.input);
             const expectedOutput = testcase.output;
-
             const filePath = path.join(cwd, this.fileName + '.js');
             const startTime = process.hrtime.bigint();
 
-            const isolate = new ivm.Isolate({ memoryLimit: problem.memoryLimit });
-            const context = await isolate.createContext();
-            const jail = context.global;
-
-            await jail.set('global', jail.derefInto());
-            await jail.set('log', (message: string) => console.log(message), { reference: true });
-
-            const code = fs.readFileSync(filePath, 'utf-8');
-
+            const isolate = new ivm.Isolate({memoryLimit: problem.memoryLimit});
+            let context;
             let script;
+
             try {
+                // Create context
+                context = await isolate.createContext();
+                const jail = context.global;
+                await jail.set('global', jail.derefInto());
+                await jail.set('log', (message: string) => console.log(message), {reference: true});
+
+                // Read and compile the script
+                const code = fs.readFileSync(filePath, 'utf-8');
                 script = await isolate.compileScript(code);
+                await script.run(context);
             } catch (error) {
                 submission.status = SubmissionStatus.STATUS_COMPILATION_ERROR;
-                submission.error = error.message;
+                submission.error = 'Compilation Error: ' + error.message;
                 this.logger.warn('Compilation Error: ' + error.message);
                 return;
             }
 
             try {
-                await script.run(context);
-
                 const fnName = problem.methodName;
-
                 const call = `${fnName}(${input.map(arg => JSON.stringify(arg)).join(',')})`;
-                console.log('method name: ' + fnName);
-                console.log('call: ' + call);
 
-                const result = context.evalSync(`${call} === undefined ? null : ${call}.toString()`);
-                console.log('Result:', result);
+                // Running the function inside evalSync
+                const result = context.evalSync(`${call} === undefined ? null : ${call}.toString()`, {timeout: problem.runtimeLimit});
 
                 const endTime = process.hrtime.bigint();
-                const cost = Number(endTime - startTime) / 1000000;
+                const cost = Number(endTime - startTime) / 1000000; // convert to ms
                 totalCost += cost;
 
-                 if (!this.compareResults(result, expectedOutput)) {
+                if (!this.compareResults(result, expectedOutput)) {
+                    submission.status = SubmissionStatus.STATUS_WRONG_ANSWER;
+                    submission.error = 'Wrong Answer';
                     submission.input = JSON.stringify(input);
                     submission.output = JSON.stringify(result);
                     submission.expectedOutput = JSON.stringify(expectedOutput);
-                    this.logger.warn('Input: ' + JSON.stringify(input));
-                    this.logger.warn('Output: ' + JSON.stringify(result));
-                    this.logger.warn('Expected Output: ' + JSON.stringify(expectedOutput));
-                    throw new Error('Wrong Answer');
+                    this.logger.warn('Wrong Answer');
+                    return;
                 }
             } catch (error) {
-                if (error.message.includes('Timeout')) {
-                    submission.status = SubmissionStatus.STATUS_TIME_LIMIT_EXCEEDED;
-                    submission.error = 'Time limit exceeded';
-                    this.logger.warn('Timeout Error: ' + error.message);
-                } else if (error.message.includes('Memory')) {
-                    submission.status = SubmissionStatus.STATUS_MEMORY_LIMIT_EXCEEDED;
-                    submission.error = 'Memory limit exceeded';
-                    this.logger.warn('Memory Limit Error: ' + error.message);
-                } else if (error.message.includes('Runtime')) {
-                    submission.status = SubmissionStatus.STATUS_RUNTIME_ERROR;
-                    submission.error = error.message;
-                    this.logger.warn('Runtime Error: ' + error.message);
-                } else if (error.message.includes('Wrong Answer')) {
-                    submission.status = SubmissionStatus.STATUS_WRONG_ANSWER;
-                    submission.error = 'Wrong Answer';
-                    this.logger.warn('Worker Error: ' + error.message);
-                } else if (error.message.includes('Interval')) {
-                    submission.status = SubmissionStatus.STATUS_INTERNAL_ERROR;
-                    submission.error = 'Interval error';
-                    this.logger.warn('Interval Error: ' + error.message);
-                } else {
-                    this.logger.error('Developer Error: ' + error.message);
-                    throw error; // Re-throw the error for the developer to handle
-                }
-                return; // Exit the worker
+                this.handleRunError(error, submission);
+                return; // Exit if error occurred
             } finally {
-                script.release();
-                context.release();
+                // Cleanup resources
+                if (script) script.release();
+                if (context) context.release();
                 isolate.dispose();
             }
         }
 
-
+        // Calculate memory usage
         const memoryEnd = process.memoryUsage().heapUsed;
         const memoryUsed = Math.abs(memoryEnd - memoryStart);
-        this.logger.log(`Memory used: ${memoryUsed} bytes`);
-
-        submission.memory = Math.round((memoryUsed / (1024 * 1024))* 100) / 100
+        submission.memory = Math.round((memoryUsed / (1024 * 1024)) * 100) / 100;
         submission.runtime = Math.round(totalCost * 100) / 100;
         submission.status = SubmissionStatus.STATUS_ACCEPTED;
-        submission.error = null;
-        submission.input = null;
-        submission.output = null;
-        submission.expectedOutput = null;
     }
 
+// Improved error handling for run method
+    private handleRunError(error: Error, submission: Submission) {
+        if (error.message.includes('Timeout')) {
+            submission.status = SubmissionStatus.STATUS_TIME_LIMIT_EXCEEDED;
+            submission.error = 'Time limit exceeded';
+        } else if (error.message.includes('heap out of memory') || error.message.includes('Allocation failed')) {
+            submission.status = SubmissionStatus.STATUS_MEMORY_LIMIT_EXCEEDED;
+            submission.error = 'Memory limit exceeded';
+        } else if (error.message.includes('Runtime')) {
+            submission.status = SubmissionStatus.STATUS_RUNTIME_ERROR;
+            submission.error = 'Runtime Error';
+        } else if (error.message.includes('Wrong Answer')) {
+            submission.status = SubmissionStatus.STATUS_WRONG_ANSWER;
+            submission.error = 'Wrong Answer';
+        } else {
+            submission.status = SubmissionStatus.STATUS_INTERNAL_ERROR;
+            submission.error = 'Internal error';
+            this.logger.warn('Internal Error: ' + error.message);
+        }
+    }
+
+// parseInput method remains the same
+
+
     // Improved comparison method
-    compareResults(result: any, expected: any): boolean {
+    private compareResults(result: any, expected: any): boolean {
         const normalizedExpected = expected !== undefined && expected !== null ? expected.toString().trim().replace(/\s+/g, '') : expected;
         const normalizedResult = result !== undefined && result !== null ? result.toString().trim().replace(/\s+/g, '') : result;
 
@@ -168,7 +161,7 @@ export class JSWorkerService implements WorkerInterface {
         return normalizedResult === normalizedExpected;
     }
 
-    parseInput(rawInput: string) {
+    private parseInput(rawInput: string) {
         const argumentPattern = /\[.*?\]|\{.*?\}|".*?"|\d+/g;
         const matches = rawInput.match(argumentPattern);
 
