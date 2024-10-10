@@ -52,7 +52,9 @@ export class JSWorkerService implements WorkerInterface {
             const filePath = path.join(cwd, this.fileName + '.js');
             const startTime = process.hrtime.bigint();
 
-            const isolate = new ivm.Isolate({memoryLimit: problem.memoryLimit});
+            const isolate = new ivm.Isolate({
+                memoryLimit: problem.memoryLimit,
+            });
             let context;
             let script;
 
@@ -74,12 +76,28 @@ export class JSWorkerService implements WorkerInterface {
                 return;
             }
 
+            // Memory monitoring variables
+            let memoryLimitExceeded = false;
+            const memoryCheckInterval = 20; // Check memory usage every 20ms
+            // Start a memory monitoring interval
+            const memoryMonitor = setInterval(async () => {
+                const memoryUsage = await isolate.getHeapStatistics();
+                const usedMemoryMB = memoryUsage.total_heap_size / (1024 * 1024);
+
+                if (usedMemoryMB > problem.memoryLimit * 0.8) { // If memory exceeds 80% of the limit, flag it
+                    memoryLimitExceeded = true;
+                    clearInterval(memoryMonitor);
+                    throw new Error('Memory limit exceeded before OOM');
+                }
+            }, memoryCheckInterval);
+
             try {
                 const fnName = problem.methodName;
                 const call = `${fnName}(${input.map(arg => JSON.stringify(arg)).join(',')})`;
 
                 // Running the function inside evalSync
                 const result = context.evalSync(`${call} === undefined ? null : ${call}.toString()`, {timeout: problem.runtimeLimit});
+                clearInterval(memoryMonitor); // Clear the interval if successful
 
                 const endTime = process.hrtime.bigint();
                 const cost = Number(endTime - startTime) / 1000000; // convert to ms
@@ -95,6 +113,8 @@ export class JSWorkerService implements WorkerInterface {
                     return;
                 }
             } catch (error) {
+                memoryLimitExceeded = false;
+                clearInterval(memoryMonitor); // Clear the interval if error
                 this.handleRunError(error, submission);
                 return; // Exit if error occurred
             } finally {

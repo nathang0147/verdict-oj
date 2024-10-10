@@ -36,7 +36,13 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         });
 
         this.redisPool.on('error', (err) => console.error('Redis Client Error', err));
-        await this.redisPool.connect();  // Connect Redis on demand
+        this.redisPool.on('close', () => {
+            console.warn('Redis Pool Connection Closed');
+            // Optional: Add reconnect logic here if needed
+        });
+        if (this.redisPool.status !== 'ready') {
+            await this.redisPool.connect();
+        }
     }
 
     public async send(payload: any) {
