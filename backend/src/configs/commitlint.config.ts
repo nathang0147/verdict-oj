@@ -1,5 +1,5 @@
 module.exports = {
-	extends: ['@commitlint/config-conventional'],
+	extends: ['@commitlint/configs-conventional'],
 	rules: {
 		'type-enum': [
 			2,
@@ -27,7 +27,7 @@ module.exports = {
 	},
 };
 /**
- * Số 2 trong config ở trên là mức độ, bao gồm:
+ * Số 2 trong configs ở trên là mức độ, bao gồm:
  * 0: Không có lỗi (off)
  * 1: Cảnh báo (warning)
  * 2: Lỗi (error)

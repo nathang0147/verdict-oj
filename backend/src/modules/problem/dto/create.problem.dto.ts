@@ -3,7 +3,6 @@ import {IsNotEmpty, MaxLength} from "class-validator";
 export class CreateProblemDto{
 
     @IsNotEmpty()
-    @MaxLength(50)
     readonly title: string;
 
     @IsNotEmpty()

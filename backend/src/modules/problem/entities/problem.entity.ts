@@ -27,13 +27,20 @@ export class Problem extends BaseNumIdEntity{
     sampleOutput: string;
 
     @Column()
+    methodName: string;
+
+    @Column()
     difficulty: number;
 
-    @Column()
+    @Column({
+        type: "float",
+    })
     @Exclude()
-    runtimeLimit: number;
+    runtimeLimit: number
 
-    @Column()
+    @Column({
+        type: "float",
+    })
     @Exclude()
     memoryLimit: number;
 

@@ -3,11 +3,11 @@ import {TestcaseService} from './testcase.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {Testcase} from "@modules/testcase/entities/testcase.entity";
 import {TestcaseRepository} from "@repositories/testcase.repository";
-import {ProblemModule} from "@modules/problem/problem.module";
+import {Problem} from "@modules/problem/entities/problem.entity";
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Testcase])
+        TypeOrmModule.forFeature([Testcase, Problem]),
     ],
     controllers: [],
     providers: [
@@ -15,7 +15,7 @@ import {ProblemModule} from "@modules/problem/problem.module";
         {
             provide: 'TestcaseRepositoryInterface',
             useClass: TestcaseRepository
-        }
+        },
     ],
     exports: [TestcaseService, TypeOrmModule.forFeature([Testcase])],
 })

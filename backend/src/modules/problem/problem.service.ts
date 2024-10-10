@@ -81,7 +81,7 @@ export class ProblemService extends BaseServiceAbstract<Problem>{
         return this.problemRepository.searchTestcasesByProblemId(problemId, input, output);
     }
 
-    async submit(submitDto: SubmitDto) {
+    async submit(userId: string, submitDto: SubmitDto) {
         if(submitDto.problemId ===null||!Object.values(SubmissionLanguage).includes(submitDto.language)){
             return {
                 code: 1,
@@ -89,9 +89,9 @@ export class ProblemService extends BaseServiceAbstract<Problem>{
             }
         }
 
-        const submissionId = await this.problemRepository.submit(submitDto);
+        const submissionId = await this.problemRepository.submit(userId,submitDto);
 
-        await this.redisService.setBit(`userTriedKeyCount:${submitDto.userId}`, submitDto.problemId, PROBLEM_STATUS.TRIED)
+        await this.redisService.setBit(`userTriedKeyCount:${userId}`, submitDto.problemId, PROBLEM_STATUS.TRIED)
 
         await this.queueService.send({id: submissionId})
 
