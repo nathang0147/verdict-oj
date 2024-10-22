@@ -1,4 +1,4 @@
-# Book Social Network
+# Verdict OJ (Online Judge) System
 
 ## Table of Contents
 
@@ -15,17 +15,19 @@
 
 ## Overview
 
-Book Social Network is a full-stack application that enables users to manage their book collections and engage with a community of book enthusiasts. It offers features such as user registration, secure email validation, book management (including creation, updating, sharing, and archiving), book borrowing with checks for availability, book return functionality, and approval of book returns. The application ensures security using JWT tokens and adheres to best practices in REST API design. The backend is built with Spring Boot 3 and Spring Security 6, while the frontend is developed using Angular with Bootstrap for styling.
+Verdict-oj is an online judge system contains a problem set of algorithms to solve, while users can compile a piece of code and execute the generated binary with pre-constructed data to test if the code is correct built.
 
 ## Features
 
-- User Registration: Users can register for a new account.
-- Email Validation: Accounts are activated using secure email validation codes.
-- User Authentication: Existing users can log in to their accounts securely.
-- Book Management: Users can create, update, share, and archive their books.
-- Book Borrowing: Implements necessary checks to determine if a book is borrowable.
-- Book Returning: Users can return borrowed books.
-- Book Return Approval: Functionality to approve book returns.
+- User Code Submission: Users submit code through frontend.
+- Asynchronous Judging: Submissions are processed by dispatcher.
+- Isolated Code Execution: Runs user-submitted code in a secure environment using isolated-vm.
+- Submission Management: Handles code submissions, test case management, and verdict generation.
+- Redis Integration: Uses Redis for message queuing (pub/sub) and caching results.
+- Error Handling: Monitors memory and time limits during code execution to ensure performance constraints.
+- Task Queueing: Dispatches code execution tasks to worker nodes.
+- Job Management: Processes submissions from the queue and forwards them to the dispatcher for execution.
+- Redis Pub/Sub: Acts as both a publisher and subscriber for processing job results.
 
 #### Class diagram
 ![Class diagram](screenshots/class-diagram.png)
@@ -41,36 +43,26 @@ Book Social Network is a full-stack application that enables users to manage the
 
 ## Technologies Used
 
-### Backend (book-network)
+### Backend
 
-- Spring Boot 3
-- Spring Security 6
-- JWT Token Authentication
-- Spring Data JPA
-- JSR-303 and Spring Validation
-- OpenAPI and Swagger UI Documentation
-- Docker
-- GitHub Actions
-- Keycloak
+- Node.js: Server-side JavaScript runtime
+- NestJS: Backend framework for both services
+- Redis: For pub/sub messaging and caching
+- TypeORM: ORM for managing database connections
 
-### Frontend (book-network-ui)
+### Dispatcher 
 
-- Angular
-- Component-Based Architecture
-- Lazy Loading
-- Authentication Guard
-- OpenAPI Generator for Angular
-- Bootstrap
+- Isolated-Vm: Isolated-vm: Secure isolated environment for untrusted code execution (used in backend)
+- Redis: For pub/sub messaging
 
 ## Learning Objectives
 
 By following this project, students will learn:
 
 - Designing a class diagram from business requirements
-- Implementing a mono repo approach
-- Securing an application using JWT tokens with Spring Security
-- Registering users and validating accounts via email
-- Utilizing inheritance with Spring Data JPA
+- Implementing a microservice repo approach
+- Securing an application using JWT tokens with Passport and Asymmetric key secret
+- Utilizing Repository Pattern for 'database layer' combining Generic Pattern for reuse code
 - Implementing the service layer and handling application exceptions
 - Object validation using JSR-303 and Spring Validation
 - Handling custom exceptions
@@ -79,7 +71,7 @@ By following this project, students will learn:
 - Documenting APIs using OpenAPI and Swagger UI
 - Implementing business requirements and handling business exceptions
 - Dockerizing the infrastructure
-- CI/CD pipeline & deployment
+- Deployment
 
 ## License
 
