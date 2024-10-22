@@ -5,8 +5,8 @@
 - [Overview](#overview)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
-    - [Backend (book-social-network)](#backend-book-social-network)
-    - [Frontend (book-social-network-ui)](#frontend-book-social-network-ui)
+    - [Backend ](#backend-book-social-network)
+    - [Dispatcher]()
 - [Learning Objectives](#learning-objectives)
 - [License](#license)
 - [Getting Started](#getting-started)
@@ -57,21 +57,17 @@ Verdict-oj is an online judge system contains a problem set of algorithms to sol
 
 ## Learning Objectives
 
-By following this project, students will learn:
+By working with this project, students will gain hands-on experience in:
 
-- Designing a class diagram from business requirements
-- Implementing a microservice repo approach
-- Securing an application using JWT tokens with Passport and Asymmetric key secret
-- Utilizing Repository Pattern for 'database layer' combining Generic Pattern for reuse code
-- Implementing the service layer and handling application exceptions
-- Object validation using JSR-303 and Spring Validation
-- Handling custom exceptions
-- Implementing pagination and REST API best practices
-- Using Spring Profiles for environment-specific configurations
-- Documenting APIs using OpenAPI and Swagger UI
-- Implementing business requirements and handling business exceptions
-- Dockerizing the infrastructure
-- Deployment
+- Designing a class diagram based on business requirements.
+- Implementing microservice architecture using a mono-repo approach.
+- Securing an application with JWT tokens using Passport, along with asymmetric key encryption.
+- Utilizing the Repository Pattern for managing the database layer with reusable generic code.
+- Setting up Redis for caching and message queues (via Azure Cache for Redis).
+- Configuring isolated-vm to run untrusted JavaScript code in a secure sandbox environment.
+- Writing unit tests with Jest.
+- Dockerizing the infrastructure for seamless deployment.
+- Deploying the system using Azure Web App services.
 
 ## License
 
@@ -81,13 +77,9 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 
 To get started with the Book Social Network project, follow the setup instructions in the respective directories:
 
-- [Backend Setup Instructions](/book-network/README.md)
-- [Frontend Setup Instructions](book-network-ui/README.md)
-
-## Contributors
-
-- [Ali Bouali](https://github.com/ali-bouali)
+- [Backend Setup Instructions](/backend/README.md)
+- [Dispatch Setup Instructions](/dispatch/README.md)
 
 ## Acknowledgments
 
-Special thanks to the developers and maintainers of the technologies used in this project. Their hard work and dedication make projects like this possible.
+Special thanks to [Chao Liu](https://github.com/liupangzi) for inspiring the project idea.
