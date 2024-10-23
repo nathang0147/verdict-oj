@@ -12,8 +12,10 @@ git clone https://github.com/nathang0147/verdict-oj
 cd verdict-oj/backend
 ```
 #### 2. Environment Setup
-Create a .env file based on the example below. Customize the variables to match your environment setup.
-Here i'm using Azure cache for Redis, Supabase for database.
+- Create a .env file based on the example below. Customize the variables to match your environment setup.
+- Here i'm using Azure cache for Redis, Supabase for database.
+- Remember! If you change variable in `.env`, you must make change  in `src/configs/env/configuration.config.ts`
+
 Example .env for Backend
 ```bash
 
