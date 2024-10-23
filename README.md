@@ -29,17 +29,11 @@ Verdict-oj is an online judge system contains a problem set of algorithms to sol
 - **Job Management**: Processes submissions from the queue and forwards them to the dispatcher for execution.
 - **Redis Pub/Sub**: Acts as both a publisher and subscriber for processing job results.
 
-#### Class diagram
-![Class diagram](screenshots/class-diagram.png)
+#### System Overview
+![Class diagram](image/Dispatch.png)
 
 #### Spring security diagram
-![Security diagram](screenshots/security.png)
-
-#### Backend pipeline
-![Security diagram](screenshots/be-pipeline.png)
-
-#### Backend pipeline
-![Security diagram](screenshots/fe-pipeline.png)
+![Security diagram](image/Database-vippro.png)
 
 ## Technologies Used
 
