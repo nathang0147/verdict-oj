@@ -19,15 +19,15 @@ Verdict-oj is an online judge system contains a problem set of algorithms to sol
 
 ## Features
 
-- User Code Submission: Users submit code through frontend.
-- Asynchronous Judging: Submissions are processed by dispatcher.
-- Isolated Code Execution: Runs user-submitted code in a secure environment using isolated-vm.
-- Submission Management: Handles code submissions, test case management, and verdict generation.
-- Redis Integration: Uses Redis for message queuing (pub/sub) and caching results.
-- Error Handling: Monitors memory and time limits during code execution to ensure performance constraints.
-- Task Queueing: Dispatches code execution tasks to worker nodes.
-- Job Management: Processes submissions from the queue and forwards them to the dispatcher for execution.
-- Redis Pub/Sub: Acts as both a publisher and subscriber for processing job results.
+- **User Code Submission**: Users submit code through frontend.
+- **Asynchronous Judging**: Submissions are processed by dispatcher.
+- **Isolated Code Execution**: Runs user-submitted code in a secure environment using isolated-vm.
+- **Submission Management**: Handles code submissions, test case management, and verdict generation.
+- **Redis Integration**: Uses Redis for message queuing (pub/sub) and caching results.
+- **Error Handling**: Monitors memory and time limits during code execution to ensure performance constraints.
+- **Task Queueing**: Dispatches code execution tasks to worker nodes.
+- **Job Management**: Processes submissions from the queue and forwards them to the dispatcher for execution.
+- **Redis Pub/Sub**: Acts as both a publisher and subscriber for processing job results.
 
 #### Class diagram
 ![Class diagram](screenshots/class-diagram.png)
