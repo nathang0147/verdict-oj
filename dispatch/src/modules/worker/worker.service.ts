@@ -19,6 +19,7 @@ export class JSWorkerService implements WorkerInterface {
     private policyFile: string
     private readonly logger = new Logger(JSWorkerService.name)
 
+
     constructor(
         private readonly configService: ConfigService<EnvironmentVariables>,
     ) {
@@ -42,6 +43,7 @@ export class JSWorkerService implements WorkerInterface {
         this.logger.log('Compile step is a no-op for JavaScript.');
     }
 
+
     async run(cwd: string, submission: Submission, testcases: Testcase[], problem: Problem): Promise<void> {
         let totalCost = 0;
         const memoryStart = process.memoryUsage().heapUsed;
@@ -52,52 +54,51 @@ export class JSWorkerService implements WorkerInterface {
             const filePath = path.join(cwd, this.fileName + '.js');
             const startTime = process.hrtime.bigint();
 
-            const isolate = new ivm.Isolate({
-                memoryLimit: problem.memoryLimit,
-            });
+            let isolate
             let context;
             let script;
+            let memoryLimitExceeded = false; // Keep track of memory status
+            let memoryMonitor: NodeJS.Timeout;
 
             try {
+                isolate = new ivm.Isolate({
+                    memoryLimit: problem.memoryLimit,
+                });
+
                 // Create context
                 context = await isolate.createContext();
                 const jail = context.global;
                 await jail.set('global', jail.derefInto());
-                await jail.set('log', (message: string) => console.log(message), {reference: true});
+                await jail.set('log', (message: string) => console.log(message), { reference: true });
 
                 // Read and compile the script
                 const code = fs.readFileSync(filePath, 'utf-8');
                 script = await isolate.compileScript(code);
                 await script.run(context);
-            } catch (error) {
-                submission.status = SubmissionStatus.STATUS_COMPILATION_ERROR;
-                submission.error = 'Compilation Error: ' + error.message;
-                this.logger.warn('Compilation Error: ' + error.message);
-                return;
-            }
 
-            // Memory monitoring variables
-            let memoryLimitExceeded = false;
-            const memoryCheckInterval = 20; // Check memory usage every 20ms
-            // Start a memory monitoring interval
-            const memoryMonitor = setInterval(async () => {
-                const memoryUsage = await isolate.getHeapStatistics();
-                const usedMemoryMB = memoryUsage.total_heap_size / (1024 * 1024);
+                // Memory monitoring
+                const memoryCheckInterval = 20; // Check memory every 20ms
+                const memoryMonitor = setInterval(async () => {
+                    try {
+                        const memoryUsage = await isolate.getHeapStatistics();
+                        const usedMemoryMB = memoryUsage.total_heap_size / (1024 * 1024);
 
-                if (usedMemoryMB > problem.memoryLimit * 0.8) { // If memory exceeds 80% of the limit, flag it
-                    memoryLimitExceeded = true;
-                    clearInterval(memoryMonitor);
-                    throw new Error('Memory limit exceeded before OOM');
-                }
-            }, memoryCheckInterval);
-
-            try {
-                const fnName = problem.methodName;
-                const call = `${fnName}(${input.map(arg => JSON.stringify(arg)).join(',')})`;
+                        if (usedMemoryMB > problem.memoryLimit * 0.8) { // If memory exceeds 80% of the limit, flag it
+                            memoryLimitExceeded = true;
+                            clearInterval(memoryMonitor);
+                            throw new Error('Memory limit exceeded before OOM');
+                        }
+                    } catch (err) {
+                        clearInterval(memoryMonitor);
+                        // Do not throw here, isolate might be already disposed due to memory limit
+                    }
+                }, memoryCheckInterval);
 
                 // Running the function inside evalSync
-                const result = context.evalSync(`${call} === undefined ? null : ${call}.toString()`, {timeout: problem.runtimeLimit});
-                clearInterval(memoryMonitor); // Clear the interval if successful
+                const fnName = problem.methodName;
+                const call = `${fnName}(${input.map(arg => JSON.stringify(arg)).join(',')})`;
+                const result = context.evalSync(`${call} === undefined ? null : ${call}.toString()`, { timeout: problem.runtimeLimit });
+                clearInterval(memoryMonitor);
 
                 const endTime = process.hrtime.bigint();
                 const cost = Number(endTime - startTime) / 1000000; // convert to ms
@@ -113,15 +114,22 @@ export class JSWorkerService implements WorkerInterface {
                     return;
                 }
             } catch (error) {
-                memoryLimitExceeded = false;
-                clearInterval(memoryMonitor); // Clear the interval if error
-                this.handleRunError(error, submission);
+                clearInterval(memoryMonitor); // Ensure the memory monitor is cleared
+                if (error.message.includes('Memory limit exceeded') || memoryLimitExceeded) {
+                    submission.status = SubmissionStatus.STATUS_MEMORY_LIMIT_EXCEEDED;
+                    submission.error = 'Memory limit exceeded';
+                } else if (error.message.includes('Isolate is already disposed')) {
+                    submission.status = SubmissionStatus.STATUS_MEMORY_LIMIT_EXCEEDED;
+                    submission.error = 'Isolate was disposed due to memory limit';
+                } else {
+                    this.handleRunError(error, submission);
+                }
                 return; // Exit if error occurred
             } finally {
                 // Cleanup resources
                 if (script) script.release();
                 if (context) context.release();
-                isolate.dispose();
+                if (isolate) isolate.dispose();
             }
         }
 
@@ -138,7 +146,7 @@ export class JSWorkerService implements WorkerInterface {
         if (error.message.includes('Timeout')) {
             submission.status = SubmissionStatus.STATUS_TIME_LIMIT_EXCEEDED;
             submission.error = 'Time limit exceeded';
-        } else if (error.message.includes('heap out of memory') || error.message.includes('Allocation failed')) {
+        } else if (error.message.includes('memory limit')) {
             submission.status = SubmissionStatus.STATUS_MEMORY_LIMIT_EXCEEDED;
             submission.error = 'Memory limit exceeded';
         } else if (error.message.includes('Runtime')) {
@@ -147,6 +155,10 @@ export class JSWorkerService implements WorkerInterface {
         } else if (error.message.includes('Wrong Answer')) {
             submission.status = SubmissionStatus.STATUS_WRONG_ANSWER;
             submission.error = 'Wrong Answer';
+        }else if (error.message.includes('Compilation')) {
+            submission.status = SubmissionStatus.STATUS_COMPILATION_ERROR;
+            submission.error = 'Compilation Error: ' + error.message;
+            this.logger.warn('Compilation Error: ' + error.message);
         } else {
             submission.status = SubmissionStatus.STATUS_INTERNAL_ERROR;
             submission.error = 'Internal error';

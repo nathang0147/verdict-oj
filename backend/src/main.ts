@@ -13,11 +13,11 @@ async function bootstrap() {
 
 	const configService = app.get(ConfigService);
 	const redis_env = configService.get<RedisConfig>('redis');
-	logger.debug(redis_env);
+	const port = configService.get('PORT') || 3000;
 
-	await app.listen(3000, () => {
+	await app.listen(port, () => {
 		logger.log(
-			`Server is running on http://localhost:${configService.get('PORT')}`,
+			`Server is running on http://verdict-oj-backend.azurewebsites.net:${port}`,
 		);
 	});
 }
