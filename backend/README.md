@@ -85,14 +85,16 @@ The backend service should now be running on http://localhost:3000. (or any port
 #### 4. Running MySQL and Redis Locally via Docker
 To run MySQL and Redis locally:
 
-MySQL:
+PostgreSQL:
 ```
-docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=verdict_db -p 3306:3306 -d mysql:latest
+docker run --name postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=verdict_db -p 5432:5432 -d postgres:latest
+
 ```
 Redis:
 ```
 docker run --name redis -p 6379:6379 -d redis:latest
 ```
+- **Small remind**: I use a single Redis instance for both caching and message pub/sub scenarios. However, if you prefer a clearer separation, you can deploy two separate Redis services and update the configuration in src/modules/cache for caching and src/modules/queue for pub/sub.
 #### 5. Hosting Backend
 1. Build Docker Image:
 
