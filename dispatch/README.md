@@ -27,11 +27,11 @@
 Getting Started with Verdict OJ Backend
 ## Prerequisites
 - Node.js (v20)
-- Docker (for Redis and MySQL)
+- Docker (for Redis and PostgreSQL)
 - PostgreSQL or other relational datbase (for hosting database)
 - Redis
 
-If you have already set up Redis and the database for Backend, use the same variable and skip step 4.
+If you have already set up Redis and the database for Backend, use the same variable.
 #### 1. Clone the Repository
 ```bash
 git clone https://github.com/nathang0147/verdict-oj
