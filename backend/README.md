@@ -68,19 +68,19 @@ Redis:
 docker run --name redis -p 6379:6379 -d redis:latest
 ```
 #### 5. Hosting Backend
-##### 1. Build Docker Image:
+1. Build Docker Image:
 
 ```
 docker build -t your_dockerhub_username/verdict-oj-backend .
 ```
-##### 2. Push Image to Docker Hub:
+2. Push Image to Docker Hub:
 
 ```
 docker push your_dockerhub_username/verdict-oj-backend
 ```
-##### 3. Deploy to Cloud Service: Deploy the Docker image on a cloud platform like **Azure App Service**,**AWS ECS**, or **Google Cloud Run**.
+3. Deploy to Cloud Service: Deploy the Docker image on a cloud platform like **Azure App Service**,**AWS ECS**, or **Google Cloud Run**.
 
-##### 4. Update `.env`: Use the cloud-hosted PostgreSQL and Redis instances in your `.env`:
+4. Update `.env`: Use the cloud-hosted PostgreSQL and Redis instances in your `.env`:
 
 ```
 REDIS_HOST=your-redis-host
