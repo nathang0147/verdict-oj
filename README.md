@@ -8,8 +8,8 @@
     - [Backend ](#backend)
     - [Dispatcher](#dispatcher)
 - [Learning Objectives](#learning-objectives)
-- [License](#license)
 - [Getting Started](#getting-started)
+- [License](#license)
 - [Acknowledgments](#acknowledgments)
 
 ## Overview
@@ -62,16 +62,16 @@ By working with this project, students will gain hands-on experience in:
 - Dockerizing the infrastructure for seamless deployment.
 - Deploying the system using Azure Web App services.
 
-## License
-
-This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
-
 ## Getting Started
 
 To get started with the Book Social Network project, follow the setup instructions in the respective directories:
 
 - [Backend Setup Instructions](/backend/README.md)
 - [Dispatch Setup Instructions](/dispatch/README.md)
+
+## License
+
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
