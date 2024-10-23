@@ -4,7 +4,7 @@ import * as process from 'node:process';
 import { registerAs } from '@nestjs/config';
 import 'tsconfig-paths/register';
 
-dotenvConfig({ path: '.env.dev' });
+dotenvConfig({ path: process.env.NODE_ENV === 'development' ? '.env.dev' : '.env' });
 
 const isDevEnv = process.env.NODE_ENV === 'development';
 

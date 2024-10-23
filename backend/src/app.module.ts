@@ -49,7 +49,7 @@ import {QueueModule} from "@modules/queue/queue.module";
 			load: [configurationConfig],
 			isGlobal: true,
 			envFilePath:
-				process.env.NODE_ENV?.trim() === NodeEnv.Dev ? '.env.dev' : '.env',
+				process.env.NODE_ENV?.trim() === 'development' ? '.env.dev' : '.env',
 			cache: true,
 			expandVariables: true,
 		}),
