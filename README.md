@@ -30,10 +30,10 @@ Verdict-oj is an online judge system contains a problem set of algorithms to sol
 - **Redis Pub/Sub**: Acts as both a publisher and subscriber for processing job results.
 
 #### System Overview
-![Class diagram](image/Dispatch.png)
+![Class diagram](image/Dispatch.drawio.png)
 
 #### Spring security diagram
-![Security diagram](image/Database-vippro.png)
+![Security diagram](image/DB.png)
 
 ## Technologies Used
 
