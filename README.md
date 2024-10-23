@@ -5,12 +5,11 @@
 - [Overview](#overview)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
-    - [Backend ](#backend-book-social-network)
-    - [Dispatcher]()
+    - [Backend ](#backend)
+    - [Dispatcher](#dispatcher)
 - [Learning Objectives](#learning-objectives)
 - [License](#license)
 - [Getting Started](#getting-started)
-- [Contributors](#contributors)
 - [Acknowledgments](#acknowledgments)
 
 ## Overview
