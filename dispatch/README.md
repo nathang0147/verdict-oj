@@ -38,11 +38,11 @@ git clone https://github.com/nathang0147/verdict-oj
 cd verdict-oj/backend
 ```
 #### 2. Environment Setup
-- Create a .env file based on the example below. Customize the variables to match your environment setup.
+- Create a `.env` file based on the example below. Customize the variables to match your environment setup.
 - Here i'm using Azure cache for Redis, Supabase for database.
 - Remember! If you change variable in `.env`, you must make change  in `src/configs/env/configuration.config.ts`
 
-Example .env for Backend
+Example `.env` for dispatcher
 ```bash
 
 NODE_ENV=development# development | production
@@ -86,7 +86,7 @@ CPP_STD=gnu++14
 C_SUFFIX=c
 CPP_SUFFIX=cpp
 ```
-#### 3. Run Backend Locally
+#### 3. Run Dispatcher Locally
 1. Install dependencies:
 
 ```bash
@@ -105,14 +105,14 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
-The backend service should now be running on http://localhost:4000. (or any port you changed before)
+The Dispatcher service should now be running on http://localhost:4000. (or any port you changed before)
 
-#### 4. Running MySQL and Redis Locally via Docker
-To run MySQL and Redis locally:
+#### 4. Running PostgreSQL and Redis Locally via Docker
+To run PostgreSQL and Redis locally:
 
-MySQL:
+PostgreSQL:
 ```
-docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=verdict_db -p 3306:3306 -d mysql:latest
+docker run --name postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=verdict_db -p 5432:5432 -d postgres:latest
 ```
 Redis:
 ```
